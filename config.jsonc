@@ -83,7 +83,18 @@
 
   // 3. Keyboard Layout (Short layout name e.g. EN, DE)
   "niri/language": {
-    "format": "{short}"
+    "format": "{short}",
+    "format-en": "EN",
+    "format-us": "EN",
+    "format-de": "DE",
+    "format-fa": "FA",
+    "format-fr": "FR",
+    "format-es": "ES",
+    "format-it": "IT",
+    "format-ru": "RU",
+    "format-tr": "TR",
+    "format-uk": "UK",
+    "format-ar": "AR"
   },
 
   // 4. Free Disk Space (e.g. 124G)

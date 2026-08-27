@@ -148,9 +148,8 @@ window#waybar.empty #window {
     color: #ffffff;
 }
 
-/* Keyboard Layout: uppercase display */
+/* Keyboard Layout */
 #language {
-    text-transform: uppercase;
     font-weight: 500;
 }
 
