@@ -1,0 +1,199 @@
+/* =============================================================================
+ * Minimal Windows 11 Dark Frosted Glass Waybar for Niri
+ * ============================================================================= */
+
+/* -----------------------------------------------------------------------------
+ * 1. Global Reset & Base Typography
+ * ----------------------------------------------------------------------------- */
+* {
+    border: none;
+    border-radius: 0;
+    font-family: "Asam", "Font Awesome 6 Free", "Font Awesome 5 Free", "Symbols Nerd Font", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    min-height: 0;
+    box-shadow: none;
+    text-shadow: none;
+}
+
+/* -----------------------------------------------------------------------------
+ * 2. Waybar Window Canvas
+ * Dark frosted glass, semi-transparent with a very subtle 1px top border
+ * ----------------------------------------------------------------------------- */
+window#waybar {
+    background-color: rgba(18, 20, 24, 0.78);
+    background-image: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.04) 0%,
+        rgba(255, 255, 255, 0.01) 15%,
+        rgba(15, 17, 21, 0.82) 100%
+    );
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    color: #e2e8f0;
+    transition: background-color 0.2s ease;
+}
+
+/* -----------------------------------------------------------------------------
+ * 3. Left Side: Current Workspace
+ * Shows ONLY the active workspace number
+ * ----------------------------------------------------------------------------- */
+#workspaces {
+    padding: 0;
+    margin-left: 6px;
+    margin-right: 4px;
+}
+
+#workspaces button {
+    padding: 0 6px;
+    margin: 2px 0;
+    border-radius: 4px;
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.10);
+    font-weight: 600;
+    border: none;
+    transition: all 0.15s ease;
+}
+
+#workspaces button.focused,
+#workspaces button.active {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.10);
+    font-weight: 600;
+}
+
+/* -----------------------------------------------------------------------------
+ * 4. Active Window Title (Text Only)
+ * ----------------------------------------------------------------------------- */
+#window {
+    padding: 0 6px;
+    margin-left: 8px;
+    color: #cbd5e1;
+    font-weight: 400;
+}
+
+window#waybar.empty #window {
+    padding: 0;
+    margin: 0;
+}
+
+/* -----------------------------------------------------------------------------
+ * 5. Right Side: Open Applications (Taskbar)
+ * Small application icons with subtle active indication
+ * ----------------------------------------------------------------------------- */
+#taskbar {
+    padding: 0 4px;
+    margin-right: 6px;
+}
+
+#taskbar button {
+    padding: 0 5px;
+    margin: 2px 2px;
+    border-radius: 4px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    opacity: 0.65;
+    transition: all 0.15s ease;
+}
+
+#taskbar button:hover {
+    background: rgba(255, 255, 255, 0.08);
+    opacity: 0.9;
+}
+
+#taskbar button.active {
+    background: rgba(255, 255, 255, 0.12);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.7);
+    opacity: 1.0;
+}
+
+#taskbar button image {
+    opacity: 0.85;
+}
+
+#taskbar button.active image {
+    opacity: 1.0;
+}
+
+/* -----------------------------------------------------------------------------
+ * 6. Right Side: System Information
+ * Order: Wi-Fi -> Clock -> Language -> Disk -> Home -> RAM -> Battery -> Volume -> Mic
+ * ----------------------------------------------------------------------------- */
+#network,
+#clock,
+#language,
+#disk,
+#custom-home,
+#memory,
+#battery,
+#pulseaudio {
+    padding: 0 6px;
+    margin: 2px 1px;
+    color: #cbd5e1;
+    border-radius: 4px;
+    transition: all 0.15s ease;
+}
+
+/* Subtle hover state matching Windows 11 taskbar icons */
+#network:hover,
+#clock:hover,
+#language:hover,
+#disk:hover,
+#custom-home:hover,
+#memory:hover,
+#battery:hover,
+#pulseaudio:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+}
+
+/* Keyboard Layout: uppercase display */
+#language {
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+/* Battery States */
+#battery.warning {
+    color: #fbbf24;
+}
+
+#battery.critical {
+    color: #f87171;
+}
+
+#battery.charging,
+#battery.plugged {
+    color: #38bdf8;
+}
+
+/* Audio Volume States */
+#pulseaudio.muted {
+    color: #94a3b8;
+    opacity: 0.6;
+}
+
+/* Microphone States */
+#pulseaudio.microphone.muted,
+#pulseaudio.microphone.source-muted {
+    color: #f87171;
+    opacity: 0.7;
+}
+
+/* -----------------------------------------------------------------------------
+ * 7. Native Tooltips
+ * ----------------------------------------------------------------------------- */
+tooltip {
+    background-color: rgba(20, 22, 28, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-top: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 6px;
+    padding: 4px 8px;
+}
+
+tooltip label {
+    color: #e2e8f0;
+    font-family: "Asam", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 11px;
+}

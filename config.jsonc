@@ -1,0 +1,152 @@
+{
+  "layer": "top",
+  "position": "bottom",
+  "height": 32,
+  "spacing": 0,
+  "margin-top": 0,
+  "margin-bottom": 0,
+  "margin-left": 0,
+  "margin-right": 0,
+
+  // Layout: Workspace -> Active Window -> Applications -> System Information
+  "modules-left": [
+    "niri/workspaces",
+    "niri/window"
+  ],
+
+  "modules-center": [],
+
+  "modules-right": [
+    "wlr/taskbar",
+    "network",
+    "clock",
+    "niri/language",
+    "disk",
+    "custom/home",
+    "memory",
+    "battery",
+    "pulseaudio",
+    "pulseaudio#microphone"
+  ],
+
+  // ---------------------------------------------------------------------------
+  // Left Side: Current Workspace (Number Only)
+  // ---------------------------------------------------------------------------
+  "niri/workspaces": {
+    "current-only": true,
+    "format": "{index}",
+    "tooltip": false
+  },
+
+  // ---------------------------------------------------------------------------
+  // Left Side: Active Focused Window Title (Text Only)
+  // ---------------------------------------------------------------------------
+  "niri/window": {
+    "format": "{}",
+    "icon": false,
+    "separate-outputs": false
+  },
+
+  // ---------------------------------------------------------------------------
+  // Right Side: Taskbar Open Applications (Small Icons)
+  // ---------------------------------------------------------------------------
+  "wlr/taskbar": {
+    "format": "{icon}",
+    "icon-size": 16,
+    "tooltip-format": "{title}",
+    "on-click": "activate",
+    "on-click-middle": "close",
+    "sort-by-app-id": true
+  },
+
+  // ---------------------------------------------------------------------------
+  // System Information in exact order:
+  // Wi-Fi -> Clock -> Language -> Disk -> Home -> RAM -> Battery -> Volume -> Mic
+  // ---------------------------------------------------------------------------
+
+  // 1. Wi-Fi
+  "network": {
+    "interval": 5,
+    "format-wifi": "",
+    "format-ethernet": "󰈀",
+    "format-disconnected": "󰤮",
+    "format-disabled": "󰤮",
+    "tooltip-format": "Wi-Fi: {essid} ({signalStrength}%)\nIP: {ipaddr}"
+  },
+
+  // 2. Clock (Time only: HH:MM)
+  "clock": {
+    "interval": 1,
+    "format": "{:%H:%M}",
+    "tooltip-format": "{:%A, %B %d, %Y}"
+  },
+
+  // 3. Keyboard Layout (Short layout name e.g. EN, DE)
+  "niri/language": {
+    "format": "{short}"
+  },
+
+  // 4. Free Disk Space (e.g. 124G)
+  "disk": {
+    "interval": 30,
+    "path": "/",
+    "format": "{specific_free:0.0f}G",
+    "unit": "GB",
+    "tooltip-format": "Disk: {free} free ({percentage_free}%)"
+  },
+
+  // 5. Home (Small home/house icon)
+  "custom/home": {
+    "format": "",
+    "tooltip": false,
+    "on-click": "xdg-open ~"
+  },
+
+  // 6. RAM (e.g. 6.2G)
+  "memory": {
+    "interval": 2,
+    "format": "{used:0.1f}G",
+    "tooltip-format": "RAM: {used:0.1f}GiB / {total:0.1f}GiB ({percentage}%)"
+  },
+
+  // 7. Battery (Icon and percentage, e.g. 87%)
+  "battery": {
+    "states": {
+      "warning": 30,
+      "critical": 15
+    },
+    "format": "{icon} {capacity}%",
+    "format-charging": " {capacity}%",
+    "format-plugged": " {capacity}%",
+    "format-icons": ["", "", "", "", ""],
+    "tooltip-format": "Battery: {capacity}%\n{timeTo}"
+  },
+
+  // 8. Volume (Speaker icon)
+  "pulseaudio": {
+    "format": "{icon}",
+    "format-muted": "",
+    "format-icons": {
+      "headphone": "",
+      "hands-free": "",
+      "headset": "",
+      "default": ["", "", ""]
+    },
+    "tooltip-format": "Volume: {volume}%\nDevice: {desc}",
+    "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
+    "on-click-right": "pavucontrol",
+    "on-scroll-up": "pactl set-sink-volume @DEFAULT_SINK@ +5%",
+    "on-scroll-down": "pactl set-sink-volume @DEFAULT_SINK@ -5%"
+  },
+
+  // 9. Microphone (Microphone icon)
+  "pulseaudio#microphone": {
+    "format": "{format_source}",
+    "format-source": "",
+    "format-source-muted": "",
+    "tooltip-format": "Microphone: {source_volume}%\nDevice: {source_desc}",
+    "on-click": "pactl set-source-mute @DEFAULT_SOURCE@ toggle",
+    "on-scroll-up": "pactl set-source-volume @DEFAULT_SOURCE@ +5%",
+    "on-scroll-down": "pactl set-source-volume @DEFAULT_SOURCE@ -5%"
+  }
+}
