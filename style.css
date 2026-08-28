@@ -18,10 +18,10 @@
 
 /* -----------------------------------------------------------------------------
  * 2. Waybar Window Canvas
- * Transparent glass with soft background blur, NO outer shadow or dark glow
+ * Dark translucent glass (78% opacity), subtle blur, zero outer shadow/glow
  * ----------------------------------------------------------------------------- */
 window#waybar {
-    background-color: rgba(18, 22, 30, 0.40);
+    background-color: rgba(18, 22, 30, 0.78);
     background-image: none;
     border: none;
     border-top: 1px solid rgba(255, 255, 255, 0.08);
@@ -108,6 +108,7 @@ window#waybar.empty #window {
 #taskbar button {
     padding: 0 8px;
     margin: 0 2px;
+    min-width: 24px;
     border-radius: 5px;
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid transparent;
@@ -145,18 +146,17 @@ window#waybar.empty #window {
 
 /* -----------------------------------------------------------------------------
  * 6. Far Right Section: System Information (Coherent System Tray)
- * Sequence: Wi-Fi -> Clock -> Language -> Disk -> Home -> RAM -> Battery -> Volume -> Mic
+ * Sequence: Clock -> Battery -> Wi-Fi -> Keyboard -> Disk -> RAM -> Volume -> Mic
  * ----------------------------------------------------------------------------- */
-#network,
 #clock,
+#battery,
+#network,
 #language,
 #disk,
-#custom-home,
 #memory,
-#battery,
 #pulseaudio,
 #pulseaudio.microphone {
-    padding: 0 6px;
+    padding: 0 8px;
     margin: 3px 2px;
     color: #cbd5e1;
     border-radius: 5px;
@@ -165,13 +165,12 @@ window#waybar.empty #window {
 }
 
 /* Desktop applet hover effect */
-#network:hover,
 #clock:hover,
+#battery:hover,
+#network:hover,
 #language:hover,
 #disk:hover,
-#custom-home:hover,
 #memory:hover,
-#battery:hover,
 #pulseaudio:hover,
 #pulseaudio.microphone:hover {
     background: rgba(255, 255, 255, 0.08);
@@ -189,11 +188,6 @@ window#waybar.empty #window {
 #language {
     font-weight: 600;
     color: #e2e8f0;
-}
-
-/* Home Quick Launcher */
-#custom-home {
-    font-weight: 500;
 }
 
 /* System Metrics (Disk & Memory) */

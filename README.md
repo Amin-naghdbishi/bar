@@ -7,13 +7,13 @@ A polished, desktop-oriented taskbar for [Niri](https://github.com/YaLTeR/niri) 
 ## 🖥️ Layout Overview
 
 ```text
-[ 1 ] Active Window Title                  [App Icons] │ [] [20:42] [EN] [124G] [] [6.2G] [ 87%] [] []
-└─────── Left Section ───────┘              └─ Apps ──┘ │ └───────────── Far Right System Tray ─────────────┘
+[ 1 ] Active Window Title                  [App Icons] │ [ 20:42] [ 87%] [ 85%] [ EN] [ 124G] [ 6.2G] [ 75%] [ 100%]
+└─────── Left Section ───────┘              └─ Apps ──┘ │ └────────────────── Far Right System Tray ──────────────────┘
 ```
 
 * **Position**: Bottom edge-to-edge full width
 * **Height**: 38px (comfortable, well-proportioned desktop panel)
-* **Visual Style**: Transparent frosted glass with soft background blur, subtle translucency, specular rim, and a crisp 1px top border
+* **Visual Style**: Dark translucent frosted glass (`rgba(18, 22, 30, 0.78)`) with soft blur, high contrast readability, zero outer shadow, and an ultra-subtle 1px top border
 * **Typography**: Modern typography styled with the **Asam font**, with standard icon and system font fallbacks
 * **Active Window Title**: Text only — strictly no application icon next to the active title
 
@@ -29,12 +29,12 @@ A polished, desktop-oriented taskbar for [Niri](https://github.com/YaLTeR/niri) 
 * **Active Window Title (`niri/window`)**:
   * Displays the focused application/window title in **pure text only**.
   * **Strictly no application icon** is rendered next to the title (e.g. `Firefox` instead of `[Icon] Firefox`).
-  * Styled with clean, high-contrast typography in the Asam font.
+  * Safeguarded with a 50-character maximum length (`"max-length": 50`) to guarantee no layout overflow.
 
 ### 2. Middle/Right Section: Open / Pinned Applications
 * **Taskbar (`wlr/taskbar`)**:
-  * Linux Mint Cinnamon-inspired grouped application indicators.
-  * Consistent **18px** icon sizes with balanced horizontal padding (32px click targets).
+  * Configured with `"all-outputs": true` to reliably detect and display all running applications (Firefox, Telegram, Terminal, HideMy, etc.).
+  * Consistent **18px** icon sizes with balanced horizontal padding.
   * **Distinguishable states**:
     * **Running / Inactive app**: Subtle bottom indicator underline (`border-bottom: 2px solid rgba(255, 255, 255, 0.22)`).
     * **Hover app**: Translucent frosted glass highlight tile with brighter underline.
@@ -43,18 +43,17 @@ A polished, desktop-oriented taskbar for [Niri](https://github.com/YaLTeR/niri) 
   * Separated from the system tray by a subtle 1px translucent glass divider and spacing.
 
 ### 3. Far Right Section: System Information (Coherent System Tray)
-Placed strictly in the requested desktop order, with each module displaying both its icon and readable value:
-1. **Wi-Fi (`network`)**: Status icon and signal strength (` {signalStrength}%` / `󰈀 Eth` / `󰤮 Off`).
-2. **Clock (`clock`)**: Primary desktop anchor with clock icon (` {:%H:%M}`) in bold Asam font.
-3. **Keyboard Layout (`niri/language`)**: Keyboard icon and layout indicator (` EN`, ` DE`, ` FA`).
-4. **Free Disk Space (`disk`)**: Hard drive icon and free space (` {specific_free:0.0f}G` e.g. ` 124G`).
-5. **Home Launcher (`custom/home`)**: House icon and label (` Home`).
-6. **RAM (`memory`)**: Chip icon and memory usage (` {used:0.1f}G` e.g. ` 6.2G`).
-7. **Battery (`battery`)**: Dynamic battery glyph and percentage (`{icon} {capacity}%` e.g. ` 87%`).
-8. **Volume (`pulseaudio`)**: Speaker icon and volume percentage (`{icon} {volume}%` e.g. ` 75%` or ` Muted`).
-9. **Microphone (`pulseaudio#microphone`)**: Microphone icon and volume level (` {source_volume}%` e.g. ` 100%` or ` Muted`).
+Placed strictly in the requested desktop order: **Clock → Battery → Wi-Fi → Keyboard Layout → Disk → RAM → Volume → Microphone**
+1. **Clock (`clock`)**: Primary desktop anchor with clock icon (`   {:%H:%M}`) in bold Asam font.
+2. **Battery (`battery`)**: Dynamic battery glyph and percentage (`{icon}   {capacity}%` e.g. `   87%`).
+3. **Wi-Fi (`network`)**: Status icon and signal strength (`   {signalStrength}%` / `󰈀   Eth` / `󰤮   Off`).
+4. **Keyboard Layout (`niri/language`)**: Keyboard icon and layout indicator (`   EN`, `   DE`, `   FA`).
+5. **Free Disk Space (`disk`)**: Hard drive icon and free space (`   {specific_free:0.0f}G` e.g. `   124G`).
+6. **RAM (`memory`)**: Chip icon and memory usage (`   {used:0.1f}G` e.g. `   6.2G`).
+7. **Volume (`pulseaudio`)**: Speaker icon and volume percentage (`{icon}   {volume}%` e.g. `   75%` or `   Muted`).
+8. **Microphone (`pulseaudio#microphone`)**: Microphone icon and volume level (`   {volume}%` e.g. `   100%` or `   Muted`).
 
-All system modules share consistent 1-space icon-to-value gap and unified module spacing for a coherent desktop system tray, completely free of surrounding drop shadows or dark glow.
+All system modules share a comfortable 3-space icon-to-value gap and unified module spacing for a clean, coherent desktop system tray.
 
 ---
 
