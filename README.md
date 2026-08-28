@@ -27,12 +27,14 @@ A polished, desktop-oriented taskbar for [Niri](https://github.com/YaLTeR/niri) 
   * Inactive workspaces are hidden (`"current-only": true`).
 * **Open Applications (`wlr/taskbar`)**:
   * Directly replaces the active window text title with **application icons**.
-  * Styled with **Papirus-Dark** icons at **22px** with balanced 32px hitboxes.
+  * Styled with **Papirus-Dark** icons at **22px** centered with precision within unified 36×36 rounded containers (`"justify": "center"`).
+  * Equal 7px visual space on all sides (top, bottom, left, right), eliminating off-center drift.
   * Configured with `"all-outputs": true` to reliably detect all running desktop applications (Firefox, Terminal, Telegram, etc.).
-  * **Distinguishable states**:
-    * **Running / Inactive app**: Subtle bottom indicator underline (`border-bottom: 2px solid rgba(255, 255, 255, 0.25)`).
-    * **Hover app**: Translucent frosted glass highlight tile with brighter underline.
-    * **Active focused app**: Distinct illuminated frosted glass background tile with an elegant frosted ice-blue accent underline (`rgba(186, 230, 253, 0.95)`).
+  * **Windows 11-inspired interaction design**:
+    * **Running / Inactive app**: Clean transparent container with a delicate 2px bottom running indicator.
+    * **Hover app**: Translucent frosted glass tile (`rgba(255, 255, 255, 0.08)`) smoothly appearing with a fast 0.12s transition.
+    * **Active focused app**: Distinct illuminated frosted glass tile (`rgba(255, 255, 255, 0.13)`) with an elegant sky-blue accent underline (`#38bdf8`).
+    * **Active hovered app**: Brightened frosted glass highlight tile (`rgba(255, 255, 255, 0.18)`).
 
 ### 2. Far Right Section: System Information (Reversed Order)
 The entire system information sequence is arranged in full **right-to-left reversed order**, placing the desktop clock at the bottom-right corner:

@@ -37,11 +37,12 @@
   },
 
   // ---------------------------------------------------------------------------
-  // Left Side: Open Application Icons (Papirus Icon Theme, Cinnamon-style)
+  // Left Side: Open Application Icons (Papirus Icon Theme, Windows 11-style)
   // ---------------------------------------------------------------------------
   "wlr/taskbar": {
     "all-outputs": true,
     "format": "{icon}",
+    "justify": "center",
     "icon-theme": "Papirus-Dark",
     "icon-size": 22,
     "tooltip-format": "{title}",
