@@ -42,19 +42,19 @@ A polished, desktop-oriented taskbar for [Niri](https://github.com/YaLTeR/niri) 
   * Click to activate/focus, middle-click to close.
   * Separated from the system tray by a subtle 1px translucent glass divider and spacing.
 
-### 3. Far Right Section: System Information
-Placed strictly in the requested desktop order:
-1. **Wi-Fi (`network`)**: Clean network status glyph (`` / `󰈀` / `󰤮`).
-2. **Clock (`clock`)**: Primary desktop anchor formatted as `{:%H:%M}` (e.g. `20:42`) in bold Asam font.
-3. **Keyboard Layout (`niri/language`)**: Concise layout indicator (e.g. `EN`, `DE`, `FA`).
-4. **Free Disk Space (`disk`)**: Available root partition space formatted as `{specific_free:0.0f}G` (e.g. `124G`).
-5. **Home (`custom/home`)**: House icon (``) that opens the home directory on click.
-6. **RAM (`memory`)**: Used RAM in gigabytes formatted as `{used:0.1f}G` (e.g. `6.2G`).
-7. **Battery (`battery`)**: Dynamic battery glyph and percentage (e.g. ` 87%`) with soft charging/warning/critical states.
-8. **Volume (`pulseaudio`)**: Volume icon (`` / `` when muted). Click toggles mute; right-click opens `pavucontrol`; scroll changes volume.
-9. **Microphone (`pulseaudio#microphone`)**: Microphone icon (`` / `` when muted). Click toggles mute; scroll adjusts level.
+### 3. Far Right Section: System Information (Coherent System Tray)
+Placed strictly in the requested desktop order, with each module displaying both its icon and readable value:
+1. **Wi-Fi (`network`)**: Status icon and signal strength (` {signalStrength}%` / `󰈀 Eth` / `󰤮 Off`).
+2. **Clock (`clock`)**: Primary desktop anchor with clock icon (` {:%H:%M}`) in bold Asam font.
+3. **Keyboard Layout (`niri/language`)**: Keyboard icon and layout indicator (` EN`, ` DE`, ` FA`).
+4. **Free Disk Space (`disk`)**: Hard drive icon and free space (` {specific_free:0.0f}G` e.g. ` 124G`).
+5. **Home Launcher (`custom/home`)**: House icon and label (` Home`).
+6. **RAM (`memory`)**: Chip icon and memory usage (` {used:0.1f}G` e.g. ` 6.2G`).
+7. **Battery (`battery`)**: Dynamic battery glyph and percentage (`{icon} {capacity}%` e.g. ` 87%`).
+8. **Volume (`pulseaudio`)**: Speaker icon and volume percentage (`{icon} {volume}%` e.g. ` 75%` or ` Muted`).
+9. **Microphone (`pulseaudio#microphone`)**: Microphone icon and volume level (` {source_volume}%` e.g. ` 100%` or ` Muted`).
 
-All system items feature interactive desktop applet hover feedback without heavy developer dashboard boxes or oversized cards.
+All system modules share consistent 1-space icon-to-value gap and unified module spacing for a coherent desktop system tray, completely free of surrounding drop shadows or dark glow.
 
 ---
 
