@@ -1,31 +1,30 @@
 {
   "layer": "top",
   "position": "bottom",
-  "height": 38,
+  "height": 44,
   "spacing": 0,
   "margin-top": 0,
   "margin-bottom": 0,
   "margin-left": 0,
   "margin-right": 0,
 
-  // Layout: Left (Workspace + Window) -> Middle/Right (Taskbar) -> Far Right (System Tray)
+  // Layout: Left: Workspace + App Icons -> Middle: Empty -> Right: Reversed System Tray
   "modules-left": [
     "niri/workspaces",
-    "niri/window"
+    "wlr/taskbar"
   ],
 
   "modules-center": [],
 
   "modules-right": [
-    "wlr/taskbar",
-    "clock",
-    "battery",
-    "network",
-    "niri/language",
-    "disk",
-    "memory",
+    "pulseaudio#microphone",
     "pulseaudio",
-    "pulseaudio#microphone"
+    "memory",
+    "disk",
+    "niri/language",
+    "network",
+    "battery",
+    "clock"
   ],
 
   // ---------------------------------------------------------------------------
@@ -38,22 +37,13 @@
   },
 
   // ---------------------------------------------------------------------------
-  // Left Side: Active Focused Window Title (Text Only, No Icon)
-  // ---------------------------------------------------------------------------
-  "niri/window": {
-    "format": "{}",
-    "icon": false,
-    "max-length": 50,
-    "separate-outputs": false
-  },
-
-  // ---------------------------------------------------------------------------
-  // Middle/Right Side: Taskbar Open Applications (all-outputs: true)
+  // Left Side: Open Application Icons (Papirus Icon Theme, Cinnamon-style)
   // ---------------------------------------------------------------------------
   "wlr/taskbar": {
     "all-outputs": true,
     "format": "{icon}",
-    "icon-size": 18,
+    "icon-theme": "Papirus-Dark",
+    "icon-size": 22,
     "tooltip-format": "{title}",
     "on-click": "activate",
     "on-click-middle": "close",
@@ -61,42 +51,56 @@
   },
 
   // ---------------------------------------------------------------------------
-  // System Information in exact order:
-  // Clock -> Battery -> Wi-Fi -> Keyboard Layout -> Disk -> RAM -> Volume -> Mic
+  // Right Side: System Information in REVERSED Right-to-Left Order:
+  // Mic -> Volume -> RAM -> Disk -> Keyboard -> Wi-Fi -> Battery -> Clock
   // Each module displays BOTH its icon and value with comfortable 3-space gap
   // ---------------------------------------------------------------------------
 
-  // 1. Clock (HH:MM)
-  "clock": {
-    "interval": 1,
-    "format": "   {:%H:%M}",
-    "tooltip-format": "{:%A, %B %d, %Y}"
+  // 1. Microphone (Microphone icon and level/status)
+  "pulseaudio#microphone": {
+    "format": "{format_source}",
+    "format-source": "   {volume}%",
+    "format-source-muted": "   Muted",
+    "tooltip-format": "Microphone: {volume}%\nDevice: {desc}",
+    "on-click": "pactl set-source-mute @DEFAULT_SOURCE@ toggle",
+    "on-scroll-up": "pactl set-source-volume @DEFAULT_SOURCE@ +5%",
+    "on-scroll-down": "pactl set-source-volume @DEFAULT_SOURCE@ -5%"
   },
 
-  // 2. Battery (Icon and percentage)
-  "battery": {
-    "states": {
-      "warning": 30,
-      "critical": 15
+  // 2. Audio Volume (Speaker icon and percentage)
+  "pulseaudio": {
+    "format": "{icon}   {volume}%",
+    "format-muted": "   Muted",
+    "format-icons": {
+      "headphone": "",
+      "hands-free": "",
+      "headset": "",
+      "default": ["", "", ""]
     },
-    "format": "{icon}   {capacity}%",
-    "format-charging": "   {capacity}%",
-    "format-plugged": "   {capacity}%",
-    "format-icons": ["", "", "", "", ""],
-    "tooltip-format": "Battery: {capacity}%\n{timeTo}"
+    "tooltip-format": "Volume: {volume}%\nDevice: {desc}",
+    "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
+    "on-click-right": "pavucontrol",
+    "on-scroll-up": "pactl set-sink-volume @DEFAULT_SINK@ +5%",
+    "on-scroll-down": "pactl set-sink-volume @DEFAULT_SINK@ -5%"
   },
 
-  // 3. Wi-Fi / Network
-  "network": {
-    "interval": 5,
-    "format-wifi": "   {signalStrength}%",
-    "format-ethernet": "󰈀   Eth",
-    "format-disconnected": "󰤮   Off",
-    "format-disabled": "󰤮   Off",
-    "tooltip-format": "Wi-Fi: {essid} ({signalStrength}%)\nIP: {ipaddr}"
+  // 3. RAM Usage (e.g. 6.2G)
+  "memory": {
+    "interval": 2,
+    "format": "   {used:0.1f}G",
+    "tooltip-format": "RAM: {used:0.1f}GiB / {total:0.1f}GiB ({percentage}%)"
   },
 
-  // 4. Keyboard Layout (e.g. EN, DE)
+  // 4. Free Disk Space (e.g. 124G)
+  "disk": {
+    "interval": 30,
+    "path": "/",
+    "format": "   {specific_free:0.0f}G",
+    "unit": "GB",
+    "tooltip-format": "Disk: {free} free ({percentage_free}%)"
+  },
+
+  // 5. Keyboard Layout (e.g. EN, DE)
   "niri/language": {
     "format": "   {}",
     "format-en": "EN",
@@ -116,47 +120,33 @@
     "format-pl": "PL"
   },
 
-  // 5. Free Disk Space (e.g. 124G)
-  "disk": {
-    "interval": 30,
-    "path": "/",
-    "format": "   {specific_free:0.0f}G",
-    "unit": "GB",
-    "tooltip-format": "Disk: {free} free ({percentage_free}%)"
+  // 6. Wi-Fi / Network
+  "network": {
+    "interval": 5,
+    "format-wifi": "   {signalStrength}%",
+    "format-ethernet": "󰈀   Eth",
+    "format-disconnected": "󰤮   Off",
+    "format-disabled": "󰤮   Off",
+    "tooltip-format": "Wi-Fi: {essid} ({signalStrength}%)\nIP: {ipaddr}"
   },
 
-  // 6. RAM Usage (e.g. 6.2G)
-  "memory": {
-    "interval": 2,
-    "format": "   {used:0.1f}G",
-    "tooltip-format": "RAM: {used:0.1f}GiB / {total:0.1f}GiB ({percentage}%)"
-  },
-
-  // 7. Audio Volume (Speaker icon and percentage, e.g. 75%)
-  "pulseaudio": {
-    "format": "{icon}   {volume}%",
-    "format-muted": "   Muted",
-    "format-icons": {
-      "headphone": "",
-      "hands-free": "",
-      "headset": "",
-      "default": ["", "", ""]
+  // 7. Battery (Icon and percentage)
+  "battery": {
+    "states": {
+      "warning": 30,
+      "critical": 15
     },
-    "tooltip-format": "Volume: {volume}%\nDevice: {desc}",
-    "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
-    "on-click-right": "pavucontrol",
-    "on-scroll-up": "pactl set-sink-volume @DEFAULT_SINK@ +5%",
-    "on-scroll-down": "pactl set-sink-volume @DEFAULT_SINK@ -5%"
+    "format": "{icon}   {capacity}%",
+    "format-charging": "   {capacity}%",
+    "format-plugged": "   {capacity}%",
+    "format-icons": ["", "", "", "", ""],
+    "tooltip-format": "Battery: {capacity}%\n{timeTo}"
   },
 
-  // 8. Microphone (Microphone icon and level/status)
-  "pulseaudio#microphone": {
-    "format": "{format_source}",
-    "format-source": "   {volume}%",
-    "format-source-muted": "   Muted",
-    "tooltip-format": "Microphone: {volume}%\nDevice: {desc}",
-    "on-click": "pactl set-source-mute @DEFAULT_SOURCE@ toggle",
-    "on-scroll-up": "pactl set-source-volume @DEFAULT_SOURCE@ +5%",
-    "on-scroll-down": "pactl set-source-volume @DEFAULT_SOURCE@ -5%"
+  // 8. Clock (HH:MM)
+  "clock": {
+    "interval": 1,
+    "format": "   {:%H:%M}",
+    "tooltip-format": "{:%A, %B %d, %Y}"
   }
 }

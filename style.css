@@ -8,8 +8,8 @@
 * {
     border: none;
     border-radius: 0;
-    font-family: "Asam", "Font Awesome 6 Free", "Font Awesome 5 Free", "Symbols Nerd Font", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    font-size: 12.5px;
+    font-family: "Asam", "Symbols Nerd Font", "Font Awesome 6 Free", "Font Awesome 5 Free", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 13px;
     font-weight: 400;
     min-height: 0;
     box-shadow: none;
@@ -18,13 +18,13 @@
 
 /* -----------------------------------------------------------------------------
  * 2. Waybar Window Canvas
- * Dark translucent glass (78% opacity), subtle blur, zero outer shadow/glow
+ * Dark translucent glass (84% opacity), subtle blur, zero outer shadow/glow
  * ----------------------------------------------------------------------------- */
 window#waybar {
-    background-color: rgba(18, 22, 30, 0.78);
+    background-color: rgba(16, 20, 28, 0.84);
     background-image: none;
     border: none;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid rgba(255, 255, 255, 0.10);
     box-shadow: none;
     color: #e2e8f0;
     transition: background-color 0.2s ease;
@@ -40,18 +40,18 @@ window#waybar > box {
  * ----------------------------------------------------------------------------- */
 #workspaces {
     padding: 0;
-    margin: 3px 0 3px 8px;
+    margin: 4px 0 4px 8px;
 }
 
 #workspaces button {
-    padding: 0 10px;
+    padding: 0 11px;
     margin: 0;
-    border-radius: 5px;
+    border-radius: 6px;
     color: #ffffff;
     background: rgba(255, 255, 255, 0.09);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.14);
     font-weight: 600;
-    font-size: 12px;
+    font-size: 12.5px;
     transition: all 0.15s ease;
 }
 
@@ -63,57 +63,30 @@ window#waybar > box {
 #workspaces button.focused,
 #workspaces button.active {
     color: #ffffff;
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.24);
     font-weight: 600;
 }
 
 /* -----------------------------------------------------------------------------
- * 4. Left Section: Active Window Title (Text Only)
- * Pure text window title - strictly no application icon
- * ----------------------------------------------------------------------------- */
-#window {
-    padding: 0 10px;
-    margin: 3px 6px 3px 6px;
-    color: #f1f5f9;
-    font-weight: 500;
-    font-size: 12.5px;
-}
-
-/* Ensure active window title has no icon footprint */
-#window image {
-    opacity: 0;
-    min-width: 0;
-    min-height: 0;
-    margin: 0;
-    padding: 0;
-}
-
-window#waybar.empty #window {
-    padding: 0;
-    margin: 0;
-}
-
-/* -----------------------------------------------------------------------------
- * 5. Middle/Right Section: Open Applications (Cinnamon-inspired Taskbar)
- * Distinguishable application buttons with running indicator & active highlight
+ * 4. Left Section: Open Applications (Cinnamon-style Papirus Icons)
+ * Application icons replace the active window title
  * ----------------------------------------------------------------------------- */
 #taskbar {
     padding: 0 4px;
-    margin: 3px 12px 3px 0;
-    border-right: 1px solid rgba(255, 255, 255, 0.10);
-    padding-right: 10px;
+    margin: 4px 0 4px 8px;
 }
 
 #taskbar button {
     padding: 0 8px;
     margin: 0 2px;
-    min-width: 24px;
-    border-radius: 5px;
+    min-width: 32px;
+    min-height: 32px;
+    border-radius: 6px;
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid transparent;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.22);
-    opacity: 0.80;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.25);
+    opacity: 0.85;
     transition: all 0.15s ease;
 }
 
@@ -133,11 +106,11 @@ window#waybar.empty #window {
 }
 
 #taskbar button image {
-    opacity: 0.85;
+    opacity: 0.90;
 }
 
 #taskbar button:hover image {
-    opacity: 0.95;
+    opacity: 1.0;
 }
 
 #taskbar button.active image {
@@ -145,43 +118,44 @@ window#waybar.empty #window {
 }
 
 /* -----------------------------------------------------------------------------
- * 6. Far Right Section: System Information (Coherent System Tray)
- * Sequence: Clock -> Battery -> Wi-Fi -> Keyboard -> Disk -> RAM -> Volume -> Mic
+ * 5. Far Right Section: System Information (Coherent System Tray)
+ * Reversed Order: Mic -> Volume -> RAM -> Disk -> Keyboard -> Wi-Fi -> Battery -> Clock
  * ----------------------------------------------------------------------------- */
-#clock,
-#battery,
-#network,
-#language,
-#disk,
-#memory,
+#pulseaudio.microphone,
 #pulseaudio,
-#pulseaudio.microphone {
+#memory,
+#disk,
+#language,
+#network,
+#battery,
+#clock {
     padding: 0 8px;
-    margin: 3px 2px;
+    margin: 4px 2px;
     color: #cbd5e1;
-    border-radius: 5px;
+    border-radius: 6px;
     border: 1px solid transparent;
     transition: all 0.15s ease;
 }
 
 /* Desktop applet hover effect */
-#clock:hover,
-#battery:hover,
-#network:hover,
-#language:hover,
-#disk:hover,
-#memory:hover,
+#pulseaudio.microphone:hover,
 #pulseaudio:hover,
-#pulseaudio.microphone:hover {
+#memory:hover,
+#disk:hover,
+#language:hover,
+#network:hover,
+#battery:hover,
+#clock:hover {
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.10);
     color: #ffffff;
 }
 
-/* Primary Desktop Clock Anchor */
+/* Primary Desktop Clock Anchor (Far right corner) */
 #clock {
     font-weight: 600;
     color: #f8fafc;
+    margin-right: 8px;
 }
 
 /* Keyboard Layout Badge */
@@ -217,10 +191,6 @@ window#waybar.empty #window {
 }
 
 /* Microphone States */
-#pulseaudio.microphone {
-    margin-right: 8px;
-}
-
 #pulseaudio.microphone.muted,
 #pulseaudio.microphone.source-muted {
     color: #f87171;
@@ -228,19 +198,19 @@ window#waybar.empty #window {
 }
 
 /* -----------------------------------------------------------------------------
- * 7. Frosted Glass Tooltips
+ * 6. Frosted Glass Tooltips
  * ----------------------------------------------------------------------------- */
 tooltip {
-    background-color: rgba(18, 22, 30, 0.94);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-top: 1px solid rgba(255, 255, 255, 0.22);
+    background-color: rgba(16, 20, 28, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
     border-radius: 6px;
-    padding: 5px 10px;
+    padding: 6px 12px;
     box-shadow: none;
 }
 
 tooltip label {
     color: #f1f5f9;
     font-family: "Asam", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size: 11.5px;
+    font-size: 12px;
 }
