@@ -1,7 +1,7 @@
 {
   "layer": "top",
   "position": "bottom",
-  "height": 44,
+  "height": 48,
   "spacing": 2,
   "margin-top": 0,
   "margin-bottom": 0,
@@ -12,29 +12,40 @@
   // Module Layout Configuration
   // ---------------------------------------------------------------------------
   // LEFT:   [ Current Workspace Number ]
-  // MIDDLE: [ Grouped Application Taskbar with Window Dots ]
-  // RIGHT:  [ Clock ] -> [ Audio ] -> [ Bluetooth ] -> [ Battery ] -> [ Storage ] -> [ Keyboard ] -> [ Tray ]
+  // MIDDLE: [ Individual Application Buttons: Firefox | Terminal | Files | Editor ... ]
+  // RIGHT:  [ Tray ] -> [ Keyboard ] -> [ Storage ] -> [ Battery ] -> [ Bluetooth ] -> [ Audio ] -> [ Clock ]
   // ---------------------------------------------------------------------------
   "modules-left": [
     "custom/workspace"
   ],
 
   "modules-center": [
-    "custom/taskbar"
+    "custom/app-1",
+    "custom/app-2",
+    "custom/app-3",
+    "custom/app-4",
+    "custom/app-5",
+    "custom/app-6",
+    "custom/app-7",
+    "custom/app-8",
+    "custom/app-9",
+    "custom/app-10",
+    "custom/app-11",
+    "custom/app-12"
   ],
 
   "modules-right": [
-    "clock",
-    "custom/audio",
-    "custom/bluetooth",
-    "custom/battery",
-    "custom/storage",
+    "custom/tray-overflow",
     "custom/keyboard",
-    "custom/tray-overflow"
+    "custom/storage",
+    "custom/battery",
+    "custom/bluetooth",
+    "custom/audio",
+    "clock"
   ],
 
   // ---------------------------------------------------------------------------
-  // LEFT SECTION: Minimal Workspace Indicator (Active Workspace Number Only)
+  // LEFT SECTION: Minimal Workspace Indicator
   // ---------------------------------------------------------------------------
   "custom/workspace": {
     "exec": "python3 $HOME/.config/niri-panel/scripts/workspace.py --watch",
@@ -44,56 +55,136 @@
   },
 
   // ---------------------------------------------------------------------------
-  // CENTER SECTION: Niri Application Taskbar
-  // - One icon per application (groups multiple windows)
-  // - Subtle window indicators underneath (●, ● ●, ● ● ●)
-  // - Clean icon-only design (no card backgrounds, no blue underline)
-  // - Left-click: Focus or Window Selector Popup for multiple windows
-  // - Right-click: Context Menu Popup
+  // CENTER SECTION: Independent Application Buttons
+  // Each app has its own separate button with icon and dots underneath
   // ---------------------------------------------------------------------------
-  "custom/taskbar": {
-    "exec": "python3 $HOME/.config/niri-panel/scripts/taskbar.py --watch",
+  "custom/app-1": {
+    "exec": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py --watch 0",
     "return-type": "json",
     "format": "{}",
     "tooltip": false,
-    "on-click": "python3 $HOME/.config/niri-panel/scripts/taskbar.py --click",
-    "on-click-right": "python3 $HOME/.config/niri-panel/scripts/taskbar.py --right-click"
+    "on-click": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py click 0",
+    "on-click-right": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py right-click 0"
+  },
+  "custom/app-2": {
+    "exec": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py --watch 1",
+    "return-type": "json",
+    "format": "{}",
+    "tooltip": false,
+    "on-click": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py click 1",
+    "on-click-right": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py right-click 1"
+  },
+  "custom/app-3": {
+    "exec": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py --watch 2",
+    "return-type": "json",
+    "format": "{}",
+    "tooltip": false,
+    "on-click": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py click 2",
+    "on-click-right": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py right-click 2"
+  },
+  "custom/app-4": {
+    "exec": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py --watch 3",
+    "return-type": "json",
+    "format": "{}",
+    "tooltip": false,
+    "on-click": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py click 3",
+    "on-click-right": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py right-click 3"
+  },
+  "custom/app-5": {
+    "exec": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py --watch 4",
+    "return-type": "json",
+    "format": "{}",
+    "tooltip": false,
+    "on-click": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py click 4",
+    "on-click-right": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py right-click 4"
+  },
+  "custom/app-6": {
+    "exec": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py --watch 5",
+    "return-type": "json",
+    "format": "{}",
+    "tooltip": false,
+    "on-click": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py click 5",
+    "on-click-right": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py right-click 5"
+  },
+  "custom/app-7": {
+    "exec": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py --watch 6",
+    "return-type": "json",
+    "format": "{}",
+    "tooltip": false,
+    "on-click": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py click 6",
+    "on-click-right": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py right-click 6"
+  },
+  "custom/app-8": {
+    "exec": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py --watch 7",
+    "return-type": "json",
+    "format": "{}",
+    "tooltip": false,
+    "on-click": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py click 7",
+    "on-click-right": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py right-click 7"
+  },
+  "custom/app-9": {
+    "exec": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py --watch 8",
+    "return-type": "json",
+    "format": "{}",
+    "tooltip": false,
+    "on-click": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py click 8",
+    "on-click-right": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py right-click 8"
+  },
+  "custom/app-10": {
+    "exec": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py --watch 9",
+    "return-type": "json",
+    "format": "{}",
+    "tooltip": false,
+    "on-click": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py click 9",
+    "on-click-right": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py right-click 9"
+  },
+  "custom/app-11": {
+    "exec": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py --watch 10",
+    "return-type": "json",
+    "format": "{}",
+    "tooltip": false,
+    "on-click": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py click 10",
+    "on-click-right": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py right-click 10"
+  },
+  "custom/app-12": {
+    "exec": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py --watch 11",
+    "return-type": "json",
+    "format": "{}",
+    "tooltip": false,
+    "on-click": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py click 11",
+    "on-click-right": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py right-click 11"
   },
 
   // ---------------------------------------------------------------------------
-  // RIGHT SECTION: Ordered System Modules (Triggers REAL Floating Popups)
-  // Order: Clock -> Audio -> Bluetooth -> Battery/Power -> Storage -> Keyboard -> Tray
+  // RIGHT SECTION: Reversed Order (Clock at the far edge)
+  // Order: Tray -> Keyboard -> Storage -> Battery -> Bluetooth -> Audio -> Clock
   // ---------------------------------------------------------------------------
 
-  // 1. Clock (FIRST ITEM on right side, HH:MM, no icon)
-  "clock": {
+  // 1. System Tray Overflow ([^] Chevron Icon)
+  "custom/tray-overflow": {
+    "format": "󰅃",
+    "tooltip": false,
+    "on-click": "$HOME/.config/niri-panel/scripts/popup_manager.sh tray"
+  },
+
+  // 2. Keyboard Center (Current Layout: EN, FA, etc.)
+  "custom/keyboard": {
+    "exec": "python3 $HOME/.config/niri-panel/scripts/keyboard_status.py",
+    "return-type": "json",
     "interval": 1,
-    "format": "{:%H:%M}",
-    "tooltip": false,
-    "on-click": "$HOME/.config/niri-panel/scripts/popup_manager.sh clock"
-  },
-
-  // 2. Audio Center (Single Speaker Icon ONLY - Mic combined inside popup)
-  "custom/audio": {
-    "exec": "python3 $HOME/.config/niri-panel/scripts/audio_status.py",
-    "return-type": "json",
-    "interval": 1,
     "format": "{}",
     "tooltip": false,
-    "on-click": "$HOME/.config/niri-panel/scripts/popup_manager.sh audio",
-    "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle 2>/dev/null || pactl set-sink-mute @DEFAULT_SINK@ toggle",
-    "on-scroll-up": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+ 2>/dev/null || pactl set-sink-volume @DEFAULT_SINK@ +5%",
-    "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- 2>/dev/null || pactl set-sink-volume @DEFAULT_SINK@ -5%"
+    "on-click": "$HOME/.config/niri-panel/scripts/popup_manager.sh keyboard"
   },
 
-  // 3. Bluetooth Center (Bluetooth Icon)
-  "custom/bluetooth": {
-    "exec": "python3 $HOME/.config/niri-panel/scripts/bluetooth_status.py",
+  // 3. Storage Center (Disk Icon only)
+  "custom/storage": {
+    "exec": "python3 $HOME/.config/niri-panel/scripts/storage_status.py",
     "return-type": "json",
-    "interval": 3,
+    "interval": 30,
     "format": "{}",
     "tooltip": false,
-    "on-click": "$HOME/.config/niri-panel/scripts/popup_manager.sh bluetooth"
+    "on-click": "$HOME/.config/niri-panel/scripts/popup_manager.sh storage"
   },
 
   // 4. Battery & Power Center (Battery Icon only)
@@ -106,30 +197,34 @@
     "on-click": "$HOME/.config/niri-panel/scripts/popup_manager.sh battery"
   },
 
-  // 5. Storage Center (Disk Icon only)
-  "custom/storage": {
-    "exec": "python3 $HOME/.config/niri-panel/scripts/storage_status.py",
+  // 5. Bluetooth Center (Bluetooth Icon)
+  "custom/bluetooth": {
+    "exec": "python3 $HOME/.config/niri-panel/scripts/bluetooth_status.py",
     "return-type": "json",
-    "interval": 30,
+    "interval": 3,
     "format": "{}",
     "tooltip": false,
-    "on-click": "$HOME/.config/niri-panel/scripts/popup_manager.sh storage"
+    "on-click": "$HOME/.config/niri-panel/scripts/popup_manager.sh bluetooth"
   },
 
-  // 6. Keyboard Center (Current Layout: EN, FA, etc.)
-  "custom/keyboard": {
-    "exec": "python3 $HOME/.config/niri-panel/scripts/keyboard_status.py",
+  // 6. Audio Center (Single Speaker Icon ONLY - Mic combined inside popup)
+  "custom/audio": {
+    "exec": "python3 $HOME/.config/niri-panel/scripts/audio_status.py",
     "return-type": "json",
     "interval": 1,
     "format": "{}",
     "tooltip": false,
-    "on-click": "$HOME/.config/niri-panel/scripts/popup_manager.sh keyboard"
+    "on-click": "$HOME/.config/niri-panel/scripts/popup_manager.sh audio",
+    "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle 2>/dev/null || pactl set-sink-mute @DEFAULT_SINK@ toggle",
+    "on-scroll-up": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+ 2>/dev/null || pactl set-sink-volume @DEFAULT_SINK@ +5%",
+    "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- 2>/dev/null || pactl set-sink-volume @DEFAULT_SINK@ -5%"
   },
 
-  // 7. System Tray Overflow ([^] Chevron Icon)
-  "custom/tray-overflow": {
-    "format": "󰅃",
+  // 7. Clock (Far Right Edge Anchor)
+  "clock": {
+    "interval": 1,
+    "format": "{:%H:%M}",
     "tooltip": false,
-    "on-click": "$HOME/.config/niri-panel/scripts/popup_manager.sh tray"
+    "on-click": "$HOME/.config/niri-panel/scripts/popup_manager.sh clock"
   }
 }
