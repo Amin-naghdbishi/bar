@@ -1,0 +1,13 @@
+{
+  "theme": "dark",
+  "accent_color": "#38bdf8",
+  "background_color": "rgba(16, 20, 28, 0.88)",
+  "font_family": "Asam, Symbols Nerd Font, Font Awesome 6 Free, sans-serif",
+  "bar_height": 44,
+  "icon_size": 22,
+  "popup_radius": 14,
+  "power_profile_daemon": "powerprofilesctl",
+  "battery_charge_limit_path": "/sys/class/power_supply/BAT0/charge_control_limit_max",
+  "night_light_cmd": "wlsunset -T 4500 -t 3500",
+  "lock_cmd": "swaylock -f -c 0b0f19 || hyprlock || gtklock"
+}

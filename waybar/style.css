@@ -1,0 +1,288 @@
+/* =============================================================================
+ * Professional Niri Waybar Desktop Panel
+ * Inspired by: Windows 11, Cinnamon Panel, Omarchy Philosophy
+ * ============================================================================= */
+
+/* -----------------------------------------------------------------------------
+ * 1. CSS Theme Variables & Design Tokens
+ * ----------------------------------------------------------------------------- */
+@define-color bg-panel rgba(16, 20, 28, 0.88);
+@define-color bg-hover rgba(255, 255, 255, 0.08);
+@define-color bg-active rgba(255, 255, 255, 0.14);
+@define-color bg-highlight rgba(56, 189, 248, 0.16);
+
+@define-color border-panel-top rgba(255, 255, 255, 0.12);
+@define-color border-module rgba(255, 255, 255, 0.08);
+@define-color border-module-hover rgba(255, 255, 255, 0.18);
+
+@define-color text-main #f8fafc;
+@define-color text-dim #cbd5e1;
+@define-color text-muted #94a3b8;
+
+@define-color accent-blue #38bdf8;
+@define-color accent-blue-dark #0284c7;
+@define-color color-success #4ade80;
+@define-color color-warning #fbbf24;
+@define-color color-danger #f87171;
+
+/* -----------------------------------------------------------------------------
+ * 2. Global Reset & Base Typography
+ * ----------------------------------------------------------------------------- */
+* {
+    border: none;
+    border-radius: 0;
+    font-family: "Asam", "Symbols Nerd Font", "Font Awesome 6 Free", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    min-height: 0;
+    box-shadow: none;
+    text-shadow: none;
+}
+
+/* -----------------------------------------------------------------------------
+ * 3. Waybar Root Canvas
+ * Translucent glass, subtle top highlight border, zero outer shadow
+ * ----------------------------------------------------------------------------- */
+window#waybar {
+    background-color: @bg-panel;
+    background-image: none;
+    border-top: 1px solid @border-panel-top;
+    color: @text-main;
+    transition: background-color 0.2s ease;
+}
+
+window#waybar > box {
+    padding: 0 4px;
+}
+
+/* -----------------------------------------------------------------------------
+ * 4. Left Section: Workspace Indicator Badge
+ * Minimal single number showing active Niri workspace (e.g. 1, 2, 3)
+ * Larger font size (15px), crisp frosted badge with subtle animation
+ * ----------------------------------------------------------------------------- */
+#custom-workspace {
+    min-width: 34px;
+    min-height: 32px;
+    padding: 0 8px;
+    margin: 6px 4px 6px 6px;
+    border-radius: 8px;
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    font-size: 15px;
+    font-weight: 700;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#custom-workspace:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.25);
+    color: @accent-blue;
+}
+
+#custom-workspace.workspace-transition {
+    background: @bg-highlight;
+    border-color: @accent-blue;
+    color: @accent-blue;
+}
+
+/* -----------------------------------------------------------------------------
+ * 5. Middle Section: Application Taskbar (Pinned & Running Apps)
+ * Symmetrical containers, centered icons, multi-dot window indicators
+ * Windows 11 style hover tiles and active sky-blue indicator
+ * ----------------------------------------------------------------------------- */
+#custom-taskbar {
+    min-height: 32px;
+    padding: 0 12px;
+    margin: 6px 4px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    color: @text-main;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    transition: all 0.15s ease-in-out;
+}
+
+#custom-taskbar:hover {
+    background: @bg-hover;
+    border-color: @border-module-hover;
+    color: #ffffff;
+}
+
+#custom-taskbar.has-active {
+    background: rgba(255, 255, 255, 0.07);
+    border-bottom: 2px solid @accent-blue;
+}
+
+/* Native wlr/taskbar compatibility (if used) */
+#taskbar {
+    padding: 0;
+    margin: 0 4px;
+}
+
+#taskbar button {
+    min-width: 34px;
+    min-height: 32px;
+    padding: 0 6px;
+    margin: 6px 2px;
+    border-radius: 6px;
+    background: transparent;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.18);
+    transition: all 0.12s ease-in-out;
+}
+
+#taskbar button:hover {
+    background: @bg-hover;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+#taskbar button.active {
+    background: @bg-active;
+    border-bottom: 2px solid @accent-blue;
+}
+
+/* -----------------------------------------------------------------------------
+ * 6. Right Section: System Modules & Status Buttons
+ * Minimal icon-only format, consistent 32px height, Windows 11 hover tiles
+ * ----------------------------------------------------------------------------- */
+#clock,
+#custom-audio,
+#custom-bluetooth,
+#custom-battery,
+#custom-storage,
+#custom-keyboard,
+#custom-tray-overflow {
+    min-height: 32px;
+    min-width: 28px;
+    padding: 0 10px;
+    margin: 6px 2px;
+    color: @text-dim;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    background: transparent;
+    font-size: 13px;
+    transition: all 0.12s ease-in-out;
+}
+
+#clock:hover,
+#custom-audio:hover,
+#custom-bluetooth:hover,
+#custom-battery:hover,
+#custom-storage:hover,
+#custom-keyboard:hover,
+#custom-tray-overflow:hover {
+    background: @bg-hover;
+    border-color: @border-module;
+    color: #ffffff;
+}
+
+/* Primary Desktop Clock (Far-right anchor) */
+#clock {
+    font-size: 13px;
+    font-weight: 600;
+    color: @text-main;
+    padding: 0 12px;
+    margin-right: 2px;
+}
+
+#clock:hover {
+    color: @accent-blue;
+}
+
+/* Audio Status States */
+#custom-audio {
+    font-size: 15px;
+}
+
+#custom-audio.muted {
+    color: @color-danger;
+    opacity: 0.85;
+}
+
+/* Bluetooth States */
+#custom-bluetooth {
+    font-size: 15px;
+}
+
+#custom-bluetooth.connected {
+    color: @accent-blue;
+}
+
+#custom-bluetooth.disabled {
+    color: @text-muted;
+    opacity: 0.6;
+}
+
+/* Battery States */
+#custom-battery {
+    font-size: 15px;
+}
+
+#custom-battery.charging,
+#custom-battery.plugged {
+    color: @accent-blue;
+}
+
+#custom-battery.warning {
+    color: @color-warning;
+}
+
+#custom-battery.critical {
+    color: @color-danger;
+}
+
+/* Storage State */
+#custom-storage {
+    font-size: 15px;
+}
+
+#custom-storage.warning {
+    color: @color-warning;
+}
+
+#custom-storage.critical {
+    color: @color-danger;
+}
+
+/* Keyboard Layout Badge */
+#custom-keyboard {
+    font-size: 12px;
+    font-weight: 700;
+    color: @text-main;
+    padding: 0 8px;
+}
+
+#custom-keyboard:hover {
+    color: @accent-blue;
+}
+
+/* Tray Overflow Chevron Button */
+#custom-tray-overflow {
+    font-size: 15px;
+    color: @text-muted;
+    margin-right: 6px;
+}
+
+#custom-tray-overflow:hover {
+    color: @accent-blue;
+}
+
+/* -----------------------------------------------------------------------------
+ * 7. Modern Frosted Glass Tooltips
+ * ----------------------------------------------------------------------------- */
+tooltip {
+    background-color: rgba(16, 20, 28, 0.96);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-top: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 8px;
+    padding: 8px 14px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+}
+
+tooltip label {
+    color: #f8fafc;
+    font-family: "Asam", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 12px;
+}

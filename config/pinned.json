@@ -1,0 +1,30 @@
+[
+  {
+    "name": "Firefox",
+    "app_id": "firefox",
+    "icon": "firefox",
+    "exec": "firefox",
+    "autostart": false
+  },
+  {
+    "name": "Terminal",
+    "app_id": "alacritty",
+    "icon": "utilities-terminal",
+    "exec": "alacritty",
+    "autostart": false
+  },
+  {
+    "name": "Files",
+    "app_id": "nautilus",
+    "icon": "system-file-manager",
+    "exec": "nautilus",
+    "autostart": false
+  },
+  {
+    "name": "Editor",
+    "app_id": "code",
+    "icon": "visual-studio-code",
+    "exec": "code",
+    "autostart": false
+  }
+]

@@ -1,0 +1,277 @@
+/* =============================================================================
+ * Unified Modern Glassmorphism Popup Theme for Niri Shell
+ * ============================================================================= */
+
+* {
+    font-family: "Asam", "Symbols Nerd Font", "Font Awesome 6 Free", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 13px;
+    color: #f8fafc;
+}
+
+/* Root Popup Window */
+window.popup-window {
+    background-color: transparent;
+}
+
+.popup-root {
+    background-color: rgba(16, 20, 28, 0.94);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-top: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65);
+}
+
+/* Header Component */
+.popup-header {
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.popup-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.popup-subtitle {
+    font-size: 11px;
+    color: #94a3b8;
+}
+
+.popup-close-btn {
+    min-width: 24px;
+    min-height: 24px;
+    padding: 0;
+    margin: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: #94a3b8;
+    border: none;
+}
+
+.popup-close-btn:hover {
+    background: rgba(248, 113, 113, 0.2);
+    color: #f87171;
+}
+
+/* Cards & Section Containers */
+.popup-card {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 10px;
+    transition: all 0.15s ease-in-out;
+}
+
+.popup-card:hover {
+    background-color: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.14);
+}
+
+.popup-card.active {
+    background-color: rgba(56, 189, 248, 0.12);
+    border-color: rgba(56, 189, 248, 0.35);
+}
+
+.section-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #cbd5e1;
+    margin-top: 4px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Modern Controls & Sliders */
+scale trough {
+    background-color: rgba(255, 255, 255, 0.12);
+    border-radius: 4px;
+    min-height: 6px;
+    min-width: 6px;
+}
+
+scale highlight {
+    background: linear-gradient(90deg, #38bdf8, #0ea5e9);
+    border-radius: 4px;
+    min-height: 6px;
+}
+
+scale slider {
+    background-color: #ffffff;
+    border-radius: 50%;
+    min-width: 16px;
+    min-height: 16px;
+    margin: -5px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    transition: all 0.12s ease;
+}
+
+scale slider:hover {
+    background-color: #38bdf8;
+    transform: scale(1.15);
+}
+
+/* Switch Toggles */
+switch {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    min-width: 42px;
+    min-height: 22px;
+}
+
+switch:checked {
+    background: #38bdf8;
+    border-color: #0284c7;
+}
+
+switch slider {
+    background-color: #ffffff;
+    border-radius: 50%;
+    min-width: 18px;
+    min-height: 18px;
+    margin: 1px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Interactive Buttons */
+button.action-btn {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    padding: 6px 14px;
+    color: #f8fafc;
+    font-weight: 500;
+    transition: all 0.12s ease;
+}
+
+button.action-btn:hover {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.22);
+}
+
+button.action-btn:active,
+button.action-btn.active {
+    background: rgba(56, 189, 248, 0.25);
+    border-color: #38bdf8;
+    color: #ffffff;
+}
+
+button.action-btn.danger:hover {
+    background: rgba(248, 113, 113, 0.25);
+    border-color: #f87171;
+    color: #fca5a5;
+}
+
+/* Icon Buttons */
+button.icon-btn {
+    min-width: 32px;
+    min-height: 32px;
+    padding: 0;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #e2e8f0;
+    transition: all 0.12s ease;
+}
+
+button.icon-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+}
+
+button.icon-btn.active {
+    background: rgba(56, 189, 248, 0.25);
+    border-color: #38bdf8;
+    color: #38bdf8;
+}
+
+/* List Rows */
+list row {
+    background-color: transparent;
+    padding: 8px 10px;
+    border-radius: 8px;
+    margin-bottom: 3px;
+    transition: all 0.12s ease;
+}
+
+list row:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+list row:selected {
+    background-color: rgba(56, 189, 248, 0.16);
+    color: #ffffff;
+}
+
+/* Progress Bars */
+progressbar trough {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    min-height: 8px;
+}
+
+progressbar progress {
+    background: linear-gradient(90deg, #38bdf8, #0ea5e9);
+    border-radius: 5px;
+    min-height: 8px;
+}
+
+progressbar.warning progress {
+    background: linear-gradient(90deg, #fbbf24, #f59e0b);
+}
+
+progressbar.danger progress {
+    background: linear-gradient(90deg, #f87171, #ef4444);
+}
+
+/* Calendar Widget */
+calendar {
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 8px;
+    color: #f8fafc;
+}
+
+calendar.header {
+    color: #38bdf8;
+    font-weight: 700;
+}
+
+calendar.button {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+}
+
+calendar.button:hover {
+    color: #ffffff;
+}
+
+calendar.highlight {
+    background-color: rgba(56, 189, 248, 0.3);
+    border-radius: 4px;
+    color: #38bdf8;
+    font-weight: 700;
+}
+
+/* Scrollbars */
+scrollbar {
+    background-color: transparent;
+}
+
+scrollbar slider {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    min-width: 5px;
+    min-height: 5px;
+}
+
+scrollbar slider:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+}
