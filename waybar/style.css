@@ -101,8 +101,6 @@ window#waybar > box {
 #custom-app-12 label {
     padding: 0;
     margin: 0;
-    text-align: center;
-    justify-content: center;
 }
 
 #custom-app-1:hover,
