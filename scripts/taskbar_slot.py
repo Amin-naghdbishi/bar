@@ -2,9 +2,9 @@
 """
 Individual Application Taskbar Button Slot for Waybar
 - Renders an independent button for each application
-- Resolves Papirus application icons
+- Strictly uses Papirus icon theme via desktop entry & theme lookup
 - Displays centered window indicator dots directly underneath the icon
-- Limits dots to 5 and appends number for 6+ windows (● ● ● ● ● 6)
+- Limits dots to 5 and appends number for 6+ windows (• • • • • 6)
 - Handles click (launch/focus/group selector) and right-click (context menu)
 """
 
@@ -18,7 +18,7 @@ from pathlib import Path
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from scripts.icon_resolver import resolve_icon_glyph
+from scripts.icon_resolver import resolve_app_icon_markup
 
 CONFIG_DIRS = [
     Path.home() / ".config" / "niri-panel",
@@ -110,7 +110,7 @@ def get_apps_list():
             "is_active": is_active,
             "window_count": len(windows),
             "windows": windows,
-            "glyph": resolve_icon_glyph(app_id)
+            "icon_markup": resolve_app_icon_markup(app_id)
         })
 
     # 2. Process Running Unpinned Apps
@@ -134,7 +134,7 @@ def get_apps_list():
             "is_active": is_active,
             "window_count": len(windows),
             "windows": windows,
-            "glyph": resolve_icon_glyph(app_id)
+            "icon_markup": resolve_app_icon_markup(app_id)
         })
 
     return apps
@@ -147,17 +147,17 @@ def format_dots_underneath(count, is_active):
         dots = []
         for i in range(count):
             if is_active and i == 0:
-                dots.append("<span color='#38bdf8'>●</span>")
+                dots.append("<span color='#38bdf8'>•</span>")
             else:
-                dots.append("<span color='#94a3b8'>●</span>")
+                dots.append("<span color='#94a3b8'>•</span>")
         return " ".join(dots)
     else:
         dots = []
         for i in range(5):
             if is_active and i == 0:
-                dots.append("<span color='#38bdf8'>●</span>")
+                dots.append("<span color='#38bdf8'>•</span>")
             else:
-                dots.append("<span color='#94a3b8'>●</span>")
+                dots.append("<span color='#94a3b8'>•</span>")
         dots_str = " ".join(dots)
         return f"{dots_str} <span color='#cbd5e1' font='5'>{count}</span>"
 
@@ -172,20 +172,17 @@ def get_slot_output(slot_idx):
         })
 
     app = apps[slot_idx]
-    glyph = app["glyph"]
+    icon_markup = app["icon_markup"]
     dots_str = format_dots_underneath(app["window_count"], app["is_active"]) if app["is_running"] else " "
 
+    line1 = icon_markup
+    line2 = f"<span font='5'>{dots_str}</span>"
+
     if app["is_active"]:
-        line1 = f"<span font='15' color='#ffffff'>{glyph}</span>"
-        line2 = f"<span font='5'>{dots_str}</span>"
         classes = ["app-slot", "active", f"app-{app['app_id']}"]
     elif app["is_running"]:
-        line1 = f"<span font='15' color='#cbd5e1'>{glyph}</span>"
-        line2 = f"<span font='5'>{dots_str}</span>"
         classes = ["app-slot", "running", f"app-{app['app_id']}"]
     else:
-        line1 = f"<span font='15' color='#64748b'>{glyph}</span>"
-        line2 = "<span font='5'> </span>"
         classes = ["app-slot", "pinned", f"app-{app['app_id']}"]
 
     text_content = f"{line1}\n{line2}"

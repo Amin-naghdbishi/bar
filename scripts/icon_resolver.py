@@ -1,148 +1,127 @@
 """
 Desktop and Papirus Icon Theme Lookup Resolver
-Resolves application IDs to standard Linux desktop & Papirus icons
+Strictly resolves application icons using Linux Desktop Icon Theme System:
+1. Desktop entry (.desktop) Icon= lookup
+2. Papirus / Papirus-Dark icon theme lookup (/usr/share/icons/Papirus*, ~/.icons/Papirus*)
+3. Bundled Papirus assets lookup (~/.config/niri-panel/assets/icons/apps)
+4. Other installed GTK icon themes
 """
 
 import os
+import glob
 from pathlib import Path
 
-# Complete Papirus-Dark Linux Desktop Icon Mapping
-PAPIRUS_MAP = {
-    # Web Browsers
-    "firefox": "󰈹",
-    "org.mozilla.firefox": "󰈹",
-    "firefox-esr": "󰈹",
-    "google-chrome": "",
-    "google-chrome-stable": "",
-    "chromium": "",
-    "org.chromium.Chromium": "",
-    "brave-browser": "󰖟",
-    "brave": "󰖟",
-    "microsoft-edge": "󰇩",
-    "opera": "",
-    "vivaldi": "󰖟",
-    "tor-browser": "󰖟",
+BUNDLED_DIRS = [
+    Path.home() / ".config" / "niri-panel" / "assets" / "icons" / "apps",
+    Path(__file__).resolve().parent.parent / "assets" / "icons" / "apps",
+    Path.cwd() / "assets" / "icons" / "apps"
+]
 
-    # Terminals
-    "alacritty": "",
-    "kitty": "󰄛",
-    "wezterm": "",
-    "org.wezfurlong.wezterm": "",
-    "foot": "",
-    "gnome-terminal": "",
-    "org.gnome.Terminal": "",
-    "tilix": "",
-    "konsole": "",
-    "org.kde.konsole": "",
-    "xterm": "",
-    "urxvt": "",
-    "terminator": "",
-    "xfce4-terminal": "",
-    "utilities-terminal": "",
+PAPIRUS_THEME_DIRS = [
+    Path("/usr/share/icons/Papirus-Dark"),
+    Path("/usr/share/icons/Papirus"),
+    Path.home() / ".local" / "share" / "icons" / "Papirus-Dark",
+    Path.home() / ".local" / "share" / "icons" / "Papirus",
+    Path.home() / ".icons" / "Papirus-Dark",
+    Path.home() / ".icons" / "Papirus"
+]
 
-    # File Managers
-    "nautilus": "󰉋",
-    "org.gnome.Nautilus": "󰉋",
-    "thunar": "󰉋",
-    "org.xfce.thunar": "󰉋",
-    "dolphin": "󰉋",
-    "org.kde.dolphin": "󰉋",
-    "nemo": "󰉋",
-    "pcmanfm": "󰉋",
-    "system-file-manager": "󰉋",
+FALLBACK_THEME_DIRS = [
+    Path("/usr/share/icons/hicolor"),
+    Path("/usr/share/pixmaps"),
+    Path("/usr/share/icons")
+]
 
-    # Text Editors & IDEs
-    "code": "󰨞",
-    "visual-studio-code": "󰨞",
-    "vscode": "󰨞",
-    "vscodium": "󰨞",
-    "gedit": "󰷈",
-    "org.gnome.gedit": "󰷈",
-    "kate": "󰷈",
-    "org.kde.kate": "󰷈",
-    "mousepad": "󰷈",
-    "leafpad": "󰷈",
-    "neovim": "",
-    "nvim": "",
-    "vim": "",
-    "emacs": "",
-    "sublime_text": "󰨞",
-    "text-editor": "󰷈",
-
-    # Messaging & Social
-    "telegramdesktop": "",
-    "org.telegram.desktop": "",
-    "telegram-desktop": "",
-    "telegram": "",
-    "discord": "",
-    "vesktop": "",
-    "webcord": "",
-    "element": "󰭹",
-    "deltachat": "󰭹",
-    "signal": "󰭹",
-    "slack": "󰒱",
-
-    # Media & Audio
-    "spotify": "",
-    "spotify-launcher": "",
-    "vlc": "󰕼",
-    "org.videolan.VLC": "󰕼",
-    "mpv": "",
-    "io.mpv.Mpv": "",
-    "pavucontrol": "󰕾",
-    "org.pulseaudio.pavucontrol": "󰕾",
-    "obs": "󰐌",
-    "com.obsproject.Studio": "󰐌",
-    "audacity": "󰓃",
-
-    # Graphics & Productivity
-    "gimp": "",
-    "org.gimp.GIMP": "",
-    "inkscape": "",
-    "org.inkscape.Inkscape": "",
-    "blender": "󰂫",
-    "org.blender.Blender": "󰂫",
-    "libreoffice": "󰏆",
-    "libreoffice-writer": "󰏆",
-    "libreoffice-calc": "󰏆",
-    "libreoffice-impress": "󰏆",
-    "obsidian": "󱓧",
-    "anki": "󰠮",
-    "hiddify": "󰒄",
-    "steam": "󰓓",
-    "thunderbird": "󰇮",
-    "org.mozilla.Thunderbird": "󰇮",
-
-    # Settings & Utilities
-    "gnome-control-center": "󰒓",
-    "systemsettings": "󰒓",
-    "settings": "󰒓",
-    "preferences-system": "󰒓",
-    "gnome-system-monitor": "󰍛",
-    "btop": "󰍛",
-    "htop": "󰍛",
-    "gnome-calculator": "󰃬",
-    "kcalc": "󰃬",
-    "bitwarden": "󰞀",
-    "default": "󰣆"
+# Common name mappings for desktop apps to Papirus icon file names
+APP_TO_ICON_NAME = {
+    "firefox": "firefox",
+    "org.mozilla.firefox": "firefox",
+    "firefox-esr": "firefox",
+    "google-chrome": "google-chrome",
+    "google-chrome-stable": "google-chrome",
+    "chromium": "chromium",
+    "org.chromium.Chromium": "chromium",
+    "brave-browser": "brave-browser",
+    "brave": "brave",
+    "microsoft-edge": "microsoft-edge",
+    "opera": "opera",
+    "alacritty": "Alacritty",
+    "kitty": "kitty",
+    "wezterm": "org.wezfurlong.wezterm",
+    "org.wezfurlong.wezterm": "org.wezfurlong.wezterm",
+    "foot": "foot",
+    "gnome-terminal": "org.gnome.Terminal",
+    "org.gnome.Terminal": "org.gnome.Terminal",
+    "tilix": "com.gexperts.Tilix",
+    "konsole": "org.kde.konsole",
+    "xterm": "xterm",
+    "nautilus": "org.gnome.Nautilus",
+    "org.gnome.Nautilus": "org.gnome.Nautilus",
+    "thunar": "org.xfce.thunar",
+    "dolphin": "org.kde.dolphin",
+    "nemo": "nemo",
+    "pcmanfm": "pcmanfm",
+    "code": "visual-studio-code",
+    "visual-studio-code": "visual-studio-code",
+    "vscode": "visual-studio-code",
+    "vscodium": "vscodium",
+    "gedit": "org.gnome.gedit",
+    "org.gnome.gedit": "org.gnome.gedit",
+    "kate": "org.kde.kate",
+    "mousepad": "org.xfce.mousepad",
+    "telegramdesktop": "telegram",
+    "org.telegram.desktop": "telegram",
+    "telegram-desktop": "telegram",
+    "telegram": "telegram",
+    "discord": "discord",
+    "vesktop": "discord",
+    "spotify": "spotify",
+    "spotify-launcher": "spotify",
+    "steam": "steam",
+    "gimp": "gimp",
+    "org.gimp.GIMP": "gimp",
+    "inkscape": "org.inkscape.Inkscape",
+    "blender": "blender",
+    "vlc": "vlc",
+    "mpv": "mpv",
+    "obs": "com.obsproject.Studio",
+    "obsidian": "obsidian",
+    "anki": "anki",
+    "hiddify": "hiddify",
+    "settings": "preferences-system",
+    "gnome-control-center": "gnome-control-center"
 }
 
-def resolve_icon_glyph(app_id):
+def find_icon_in_theme_dir(theme_dir, icon_names):
+    if not theme_dir.exists():
+        return None
+    for name in icon_names:
+        patterns = [
+            f"**/{name}.svg",
+            f"**/{name}.png",
+            f"**/{name}-*.svg",
+            f"**/{name}-*.png",
+            f"*{name}*.svg"
+        ]
+        for pat in patterns:
+            matches = list(theme_dir.glob(pat))
+            if matches:
+                matches.sort(key=lambda p: 0 if "48" in str(p) or "scalable" in str(p) else 1)
+                return matches[0]
+    return None
+
+def resolve_desktop_icon_file(app_id):
     if not app_id:
-        return PAPIRUS_MAP["default"]
-
-    app_clean = app_id.lower().strip()
+        return None
     
-    # 1. Exact match
-    if app_clean in PAPIRUS_MAP:
-        return PAPIRUS_MAP[app_clean]
+    app_clean = app_id.lower().strip()
+    candidate_names = [app_id, app_clean]
+    
+    mapped_name = APP_TO_ICON_NAME.get(app_clean)
+    if mapped_name:
+        candidate_names.insert(0, mapped_name)
 
-    # 2. Substring match
-    for k, v in PAPIRUS_MAP.items():
-        if k in app_clean or app_clean in k:
-            return v
-
-    # 3. Desktop Entry Lookup
+    # Check .desktop files for Icon=
     desktop_dirs = [
         Path.home() / ".local" / "share" / "applications",
         Path("/usr/share/applications")
@@ -154,11 +133,67 @@ def resolve_icon_glyph(app_id):
                     with open(df, "r", encoding="utf-8", errors="ignore") as f:
                         for line in f:
                             if line.startswith("Icon="):
-                                icon_name = line.split("=", 1)[1].strip().lower()
-                                for k, v in PAPIRUS_MAP.items():
-                                    if k in icon_name or icon_name in k:
-                                        return v
+                                icon_val = line.split("=", 1)[1].strip()
+                                if icon_val and icon_val not in candidate_names:
+                                    candidate_names.insert(0, icon_val)
+                                    candidate_names.insert(1, icon_val.lower())
                 except Exception:
                     pass
 
-    return PAPIRUS_MAP["default"]
+    # 1. Look in Papirus Theme Dirs
+    for pt in PAPIRUS_THEME_DIRS:
+        found = find_icon_in_theme_dir(pt, candidate_names)
+        if found:
+            return found
+
+    # 2. Look in Bundled Papirus Assets
+    for bd in BUNDLED_DIRS:
+        if bd.exists():
+            for name in candidate_names:
+                for ext in [".svg", ".png"]:
+                    p = bd / f"{name}{ext}"
+                    if p.exists():
+                        return p
+                if "fire" in name and (bd / "firefox.svg").exists():
+                    return bd / "firefox.svg"
+                if ("term" in name or "alacritty" in name or "kitty" in name) and (bd / "terminal.svg").exists():
+                    return bd / "terminal.svg"
+                if ("file" in name or "nautilus" in name or "thunar" in name) and (bd / "files.svg").exists():
+                    return bd / "files.svg"
+                if ("code" in name or "edit" in name or "kate" in name) and (bd / "code.svg").exists():
+                    return bd / "code.svg"
+                if "tele" in name and (bd / "telegram.svg").exists():
+                    return bd / "telegram.svg"
+                if "disc" in name and (bd / "discord.svg").exists():
+                    return bd / "discord.svg"
+                if "spot" in name and (bd / "spotify.svg").exists():
+                    return bd / "spotify.svg"
+
+    # 3. Look in Fallback Theme Dirs
+    for ft in FALLBACK_THEME_DIRS:
+        found = find_icon_in_theme_dir(ft, candidate_names)
+        if found:
+            return found
+
+    return None
+
+def resolve_app_icon_markup(app_id):
+    """
+    Returns Pango image markup for the Papirus application icon.
+    """
+    icon_file = resolve_desktop_icon_file(app_id)
+    if icon_file and icon_file.exists():
+        return f"<img src='{icon_file.resolve()}' width='20' height='20'/>"
+
+    glyph_map = {
+        "firefox": "󰈹", "terminal": "", "alacritty": "", "kitty": "󰄛",
+        "files": "󰉋", "nautilus": "󰉋", "thunar": "󰉋",
+        "code": "󰨞", "gedit": "󰷈", "telegram": "", "discord": "",
+        "spotify": "", "steam": "󰓓"
+    }
+    app_lower = (app_id or "").lower()
+    for k, v in glyph_map.items():
+        if k in app_lower:
+            return f"<span font='15'>{v}</span>"
+            
+    return "<span font='15'>󰣆</span>"
