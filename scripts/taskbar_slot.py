@@ -147,14 +147,11 @@ def format_dots_underneath(count, is_active):
         dots = []
         for i in range(count):
             if is_active and i == 0:
-                # Active focused window is sky blue
                 dots.append("<span color='#38bdf8'>●</span>")
             else:
-                # Other running windows are slate white
                 dots.append("<span color='#94a3b8'>●</span>")
         return " ".join(dots)
     else:
-        # After 5 windows: show ● ● ● ● ● N
         dots = []
         for i in range(5):
             if is_active and i == 0:
@@ -162,12 +159,11 @@ def format_dots_underneath(count, is_active):
             else:
                 dots.append("<span color='#94a3b8'>●</span>")
         dots_str = " ".join(dots)
-        return f"{dots_str} <span color='#cbd5e1' font='6'>{count}</span>"
+        return f"{dots_str} <span color='#cbd5e1' font='5'>{count}</span>"
 
 def get_slot_output(slot_idx):
     apps = get_apps_list()
     if slot_idx < 0 or slot_idx >= len(apps):
-        # Empty slot -> Waybar automatically hides empty text
         return json.dumps({
             "text": "",
             "alt": f"slot-{slot_idx}",
@@ -179,19 +175,16 @@ def get_slot_output(slot_idx):
     glyph = app["glyph"]
     dots_str = format_dots_underneath(app["window_count"], app["is_active"]) if app["is_running"] else " "
 
-    # Line 1: Icon (larger size)
-    # Line 2: Small centered dots directly underneath
     if app["is_active"]:
-        line1 = f"<span font='16' color='#ffffff'>{glyph}</span>"
+        line1 = f"<span font='15' color='#ffffff'>{glyph}</span>"
         line2 = f"<span font='5'>{dots_str}</span>"
         classes = ["app-slot", "active", f"app-{app['app_id']}"]
     elif app["is_running"]:
-        line1 = f"<span font='16' color='#cbd5e1'>{glyph}</span>"
+        line1 = f"<span font='15' color='#cbd5e1'>{glyph}</span>"
         line2 = f"<span font='5'>{dots_str}</span>"
         classes = ["app-slot", "running", f"app-{app['app_id']}"]
     else:
-        # Pinned only
-        line1 = f"<span font='16' color='#64748b'>{glyph}</span>"
+        line1 = f"<span font='15' color='#64748b'>{glyph}</span>"
         line2 = "<span font='5'> </span>"
         classes = ["app-slot", "pinned", f"app-{app['app_id']}"]
 
@@ -210,19 +203,16 @@ def handle_click(slot_idx):
         return
     app = apps[slot_idx]
 
-    # Scenario 1: Closed -> Launch
     if not app["is_running"]:
         subprocess.Popen(app["exec"], shell=True)
         return
 
-    # Scenario 2: Single Window -> Focus
     if app["window_count"] == 1:
         win_id = app["windows"][0].get("id")
         if win_id is not None:
             subprocess.run(["niri", "msg", "action", "focus-window", "--id", str(win_id)])
         return
 
-    # Scenario 3: Multiple Windows -> Open real Window Selector Popup
     script_dir = Path(__file__).resolve().parent
     window_menu_py = script_dir.parent / "popup" / "taskbar" / "window_menu.py"
     if not window_menu_py.exists():

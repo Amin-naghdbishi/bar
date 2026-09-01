@@ -1,6 +1,6 @@
 /* =============================================================================
  * Professional Minimal Desktop Panel for Niri & Wayland
- * Inspired by: Windows 11, Cinnamon Panel, Omarchy Clean Bar Philosophy
+ * Inspired by: Windows 11 Compact Taskbar & Cinnamon Minimal Panel
  * ============================================================================= */
 
 /* -----------------------------------------------------------------------------
@@ -9,7 +9,7 @@
 * {
     border: none;
     border-radius: 0;
-    font-family: "Asam", "Symbols Nerd Font", "Font Awesome 6 Free", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: "Asam", "Papirus", "Symbols Nerd Font", "Font Awesome 6 Free", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     font-size: 13px;
     font-weight: 400;
     min-height: 0;
@@ -19,12 +19,13 @@
 
 /* -----------------------------------------------------------------------------
  * 2. Waybar Window Canvas
- * Dark neutral frosted glass (86% opacity), subtle top border, zero outer shadow
+ * Dark neutral frosted glass, crisp minimal top hairline border
  * ----------------------------------------------------------------------------- */
 window#waybar {
-    background-color: rgba(16, 20, 28, 0.86);
+    background-color: rgba(16, 20, 28, 0.88);
     background-image: none;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
     color: #cbd5e1;
     transition: background-color 0.2s ease;
 }
@@ -38,15 +39,15 @@ window#waybar > box {
  * Minimal single number showing active Niri workspace (e.g. 1, 2, 3)
  * ----------------------------------------------------------------------------- */
 #custom-workspace {
-    min-width: 34px;
-    min-height: 34px;
-    padding: 0 6px;
-    margin: 7px 4px 7px 6px;
+    min-width: 30px;
+    min-height: 30px;
+    padding: 0 5px;
+    margin: 5px 4px 5px 6px;
     border-radius: 6px;
     color: #ffffff;
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.12);
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
     transition: all 0.15s ease-in-out;
 }
@@ -60,7 +61,7 @@ window#waybar > box {
 /* -----------------------------------------------------------------------------
  * 4. Middle Section: Individual Application Buttons
  * - Each application is a completely independent button
- * - Clean icon on top with centered dots directly underneath
+ * - Centered icon on top with centered indicator dots directly underneath
  * - No card backgrounds, no blue underlines, zero surrounding boxes
  * ----------------------------------------------------------------------------- */
 #custom-app-1,
@@ -75,15 +76,33 @@ window#waybar > box {
 #custom-app-10,
 #custom-app-11,
 #custom-app-12 {
-    min-width: 36px;
-    min-height: 38px;
-    padding: 3px 6px;
-    margin: 5px 2px;
+    min-width: 34px;
+    min-height: 34px;
+    padding: 1px 4px;
+    margin: 3px 2px;
     background: transparent;
     border: none;
     border-radius: 6px;
     color: #cbd5e1;
     transition: all 0.12s ease-in-out;
+}
+
+#custom-app-1 label,
+#custom-app-2 label,
+#custom-app-3 label,
+#custom-app-4 label,
+#custom-app-5 label,
+#custom-app-6 label,
+#custom-app-7 label,
+#custom-app-8 label,
+#custom-app-9 label,
+#custom-app-10 label,
+#custom-app-11 label,
+#custom-app-12 label {
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    justify-content: center;
 }
 
 #custom-app-1:hover,
@@ -120,7 +139,7 @@ window#waybar > box {
 
 /* -----------------------------------------------------------------------------
  * 5. Right Section: System Modules (Reversed: Tray -> KB -> Storage -> Battery -> BT -> Audio -> Clock)
- * Symmetrical 34px height, equal padding, clean dark hover tiles
+ * Symmetrical 30px height, equal padding, clean dark hover tiles
  * ----------------------------------------------------------------------------- */
 #custom-tray-overflow,
 #custom-keyboard,
@@ -129,10 +148,10 @@ window#waybar > box {
 #custom-bluetooth,
 #custom-audio,
 #clock {
-    min-height: 34px;
-    min-width: 28px;
-    padding: 0 9px;
-    margin: 7px 2px;
+    min-height: 30px;
+    min-width: 26px;
+    padding: 0 8px;
+    margin: 5px 2px;
     color: #cbd5e1;
     border-radius: 6px;
     border: 1px solid transparent;
@@ -158,7 +177,7 @@ window#waybar > box {
     font-size: 13px;
     font-weight: 600;
     color: #f8fafc;
-    padding: 0 10px;
+    padding: 0 9px;
     margin-right: 6px;
 }
 
@@ -168,7 +187,7 @@ window#waybar > box {
 
 /* Audio Status Icon */
 #custom-audio {
-    font-size: 15px;
+    font-size: 14px;
 }
 
 #custom-audio.muted {
@@ -178,7 +197,7 @@ window#waybar > box {
 
 /* Bluetooth Status Icon */
 #custom-bluetooth {
-    font-size: 15px;
+    font-size: 14px;
 }
 
 #custom-bluetooth.connected {
@@ -192,7 +211,7 @@ window#waybar > box {
 
 /* Battery Status Icon */
 #custom-battery {
-    font-size: 15px;
+    font-size: 14px;
 }
 
 #custom-battery.charging,
@@ -210,7 +229,7 @@ window#waybar > box {
 
 /* Storage Status Icon */
 #custom-storage {
-    font-size: 15px;
+    font-size: 14px;
 }
 
 #custom-storage.warning {
@@ -223,10 +242,10 @@ window#waybar > box {
 
 /* Keyboard Layout Badge */
 #custom-keyboard {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
     color: #e2e8f0;
-    padding: 0 7px;
+    padding: 0 6px;
 }
 
 #custom-keyboard:hover {
@@ -235,7 +254,7 @@ window#waybar > box {
 
 /* Tray Overflow Chevron Button */
 #custom-tray-overflow {
-    font-size: 15px;
+    font-size: 14px;
     color: #94a3b8;
     margin-left: 6px;
 }
