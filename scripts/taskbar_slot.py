@@ -18,7 +18,7 @@ from pathlib import Path
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from scripts.icon_resolver import resolve_app_icon
+from scripts.icon_resolver import resolve_app_icon, resolve_app_icon_path, resolve_app_icon_name
 
 CONFIG_DIRS = [
     Path.home() / ".config" / "niri-panel",
@@ -110,7 +110,9 @@ def get_apps_list():
             "is_active": is_active,
             "window_count": len(windows),
             "windows": windows,
-            "icon": resolve_app_icon(app_id)
+            "icon": resolve_app_icon(app_id),
+            "icon_path": str(resolve_app_icon_path(app_id) or ""),
+            "icon_name": resolve_app_icon_name(app_id)
         })
 
     # 2. Process Running Unpinned Apps
@@ -134,7 +136,9 @@ def get_apps_list():
             "is_active": is_active,
             "window_count": len(windows),
             "windows": windows,
-            "icon": resolve_app_icon(app_id)
+            "icon": resolve_app_icon(app_id),
+            "icon_path": str(resolve_app_icon_path(app_id) or ""),
+            "icon_name": resolve_app_icon_name(app_id)
         })
 
     return apps

@@ -20,7 +20,7 @@ The main panel stays strictly minimal and clean:
 ### 2. Restrained, Modern Aesthetics
 - Dark neutral frosted glass (`rgba(16, 20, 28, 0.86)`)
 - Increased 48px panel height with comfortable breathing room
-- Independent 38px application buttons with crisp **Papirus-Dark** icons
+- Independent 38px application buttons with authentic **Papirus** (colored) application icons
 - Subtle window indicators (dots) directly underneath each running app
 - Restrained borders, subtle glass hover tiles, and zero neon/cyberpunk effects
 
@@ -44,7 +44,7 @@ The main panel stays strictly minimal and clean:
 
 ### 2. Independent Application Taskbar Buttons (Middle)
 - **Separate Application Buttons**: Each application has its own completely independent button. No shared cards or surrounding group boxes.
-- **Papirus Icon Integration**: Uses `Papirus-Dark` system icon lookup.
+- **Papirus Icon Integration**: Uses authentic full-color `Papirus` application icon lookup.
 - **Centered Window Dots Underneath**:
   - 1 window: `•`
   - 2 windows: `• •`

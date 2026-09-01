@@ -32,7 +32,7 @@ DEFAULT_PINNED = [
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from scripts.icon_resolver import resolve_app_icon
+from scripts.icon_resolver import resolve_app_icon, resolve_app_icon_path, resolve_app_icon_name
 
 def get_config_file(filename):
     for d in CONFIG_DIRS:
@@ -110,7 +110,9 @@ def build_taskbar_state():
             "is_active": is_active,
             "window_count": len(windows),
             "windows": windows,
-            "glyph": resolve_app_icon(app_id)
+            "glyph": resolve_app_icon(app_id),
+            "icon_path": str(resolve_app_icon_path(app_id) or ""),
+            "icon_name": resolve_app_icon_name(app_id)
         })
 
     # 2. Running unpinned apps
@@ -134,7 +136,9 @@ def build_taskbar_state():
             "is_active": is_active,
             "window_count": len(windows),
             "windows": windows,
-            "glyph": resolve_app_icon(app_id)
+            "glyph": resolve_app_icon(app_id),
+            "icon_path": str(resolve_app_icon_path(app_id) or ""),
+            "icon_name": resolve_app_icon_name(app_id)
         })
 
     return apps
