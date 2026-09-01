@@ -9,7 +9,7 @@
 * {
     border: none;
     border-radius: 0;
-    font-family: "Asam", "Papirus", "Symbols Nerd Font", "Font Awesome 6 Free", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: "Asam", "Symbols Nerd Font", "Font Awesome 6 Free", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     font-size: 13px;
     font-weight: 400;
     min-height: 0;
@@ -39,10 +39,10 @@ window#waybar > box {
  * Minimal single number showing active Niri workspace (e.g. 1, 2, 3)
  * ----------------------------------------------------------------------------- */
 #custom-workspace {
-    min-width: 30px;
-    min-height: 30px;
-    padding: 0 5px;
-    margin: 5px 4px 5px 6px;
+    min-width: 32px;
+    min-height: 32px;
+    padding: 0 6px;
+    margin: 6px 4px 6px 6px;
     border-radius: 6px;
     color: #ffffff;
     background: rgba(255, 255, 255, 0.08);
@@ -76,10 +76,10 @@ window#waybar > box {
 #custom-app-10,
 #custom-app-11,
 #custom-app-12 {
-    min-width: 34px;
-    min-height: 34px;
+    min-width: 36px;
+    min-height: 36px;
     padding: 1px 4px;
-    margin: 3px 2px;
+    margin: 4px 2px;
     background: transparent;
     border: none;
     border-radius: 6px;
@@ -137,7 +137,7 @@ window#waybar > box {
 
 /* -----------------------------------------------------------------------------
  * 5. Right Section: System Modules (Reversed: Tray -> KB -> Storage -> Battery -> BT -> Audio -> Clock)
- * Symmetrical 30px height, equal padding, clean dark hover tiles
+ * Symmetrical 32px height, equal padding, clean dark hover tiles
  * ----------------------------------------------------------------------------- */
 #custom-tray-overflow,
 #custom-keyboard,
@@ -146,10 +146,10 @@ window#waybar > box {
 #custom-bluetooth,
 #custom-audio,
 #clock {
-    min-height: 30px;
+    min-height: 32px;
     min-width: 26px;
     padding: 0 8px;
-    margin: 5px 2px;
+    margin: 6px 2px;
     color: #cbd5e1;
     border-radius: 6px;
     border: 1px solid transparent;

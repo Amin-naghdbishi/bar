@@ -1,7 +1,7 @@
 {
   "layer": "top",
   "position": "bottom",
-  "height": 40,
+  "height": 44,
   "spacing": 2,
   "margin-top": 0,
   "margin-bottom": 0,
@@ -56,7 +56,7 @@
 
   // ---------------------------------------------------------------------------
   // CENTER SECTION: Independent Application Buttons
-  // Each app has its own separate button with icon and centered dots underneath
+  // Each app has its own separate button with Papirus icon and centered dots underneath
   // ---------------------------------------------------------------------------
   "custom/app-1": {
     "exec": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py --watch 0",
