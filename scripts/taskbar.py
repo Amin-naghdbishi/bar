@@ -29,56 +29,10 @@ DEFAULT_PINNED = [
     {"name": "Editor", "app_id": "code", "icon": "visual-studio-code", "exec": "code", "autostart": False}
 ]
 
-ICON_MAP = {
-    "firefox": "󰈹",
-    "org.mozilla.firefox": "󰈹",
-    "google-chrome": "",
-    "chromium": "",
-    "brave-browser": "󰖟",
-    "brave": "󰖟",
-    "alacritty": "",
-    "kitty": "󰄛",
-    "wezterm": "",
-    "org.wezfurlong.wezterm": "",
-    "foot": "",
-    "gnome-terminal": "",
-    "tilix": "",
-    "konsole": "",
-    "xterm": "",
-    "nautilus": "󰉋",
-    "org.gnome.Nautilus": "󰉋",
-    "thunar": "󰉋",
-    "dolphin": "󰉋",
-    "nemo": "󰉋",
-    "pcmanfm": "󰉋",
-    "code": "󰨞",
-    "visual-studio-code": "󰨞",
-    "vscodium": "󰨞",
-    "gedit": "󰷈",
-    "kate": "󰷈",
-    "mousepad": "󰷈",
-    "telegramdesktop": "",
-    "org.telegram.desktop": "",
-    "telegram-desktop": "",
-    "discord": "",
-    "vesktop": "",
-    "spotify": "",
-    "spotify-launcher": "",
-    "obsidian": "󱓧",
-    "steam": "󰓓",
-    "gimp": "",
-    "org.gimp.GIMP": "",
-    "inkscape": "",
-    "blender": "󰂫",
-    "mpv": "",
-    "vlc": "󰕼",
-    "hiddify": "󰒄",
-    "anki": "󰠮",
-    "pavucontrol": "󰕾",
-    "settings": "󰒓",
-    "gnome-control-center": "󰒓",
-    "default": "󰣆"
-}
+# Add parent directory to path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+from scripts.icon_resolver import resolve_app_icon
 
 def get_config_file(filename):
     for d in CONFIG_DIRS:
@@ -116,15 +70,6 @@ def get_niri_windows():
     except Exception:
         pass
     return []
-
-def get_icon_glyph(app_id):
-    if not app_id:
-        return ICON_MAP["default"]
-    app_id_lower = app_id.lower()
-    for k, v in ICON_MAP.items():
-        if k in app_id_lower:
-            return v
-    return ICON_MAP["default"]
 
 def build_taskbar_state():
     pinned_apps = load_pinned()
@@ -165,7 +110,7 @@ def build_taskbar_state():
             "is_active": is_active,
             "window_count": len(windows),
             "windows": windows,
-            "glyph": get_icon_glyph(app_id)
+            "glyph": resolve_app_icon(app_id)
         })
 
     # 2. Running unpinned apps
@@ -189,7 +134,7 @@ def build_taskbar_state():
             "is_active": is_active,
             "window_count": len(windows),
             "windows": windows,
-            "glyph": get_icon_glyph(app_id)
+            "glyph": resolve_app_icon(app_id)
         })
 
     return apps
@@ -199,16 +144,18 @@ def format_dots(count, is_active):
         return ""
     
     dots_markup = []
-    for i in range(count):
+    for i in range(min(count, 5)):
         if is_active and i == 0:
             # Active window dot is illuminated sky-blue
-            dots_markup.append("<span color='#38bdf8'>●</span>")
+            dots_markup.append("<span color='#38bdf8'>•</span>")
         else:
             # Running window dot is neutral white/slate
-            dots_markup.append("<span color='#94a3b8'>●</span>")
+            dots_markup.append("<span color='#94a3b8'>•</span>")
     
     dots_str = " ".join(dots_markup)
-    return f" <span font='7' rise='-2000'>{dots_str}</span>"
+    if count > 5:
+        dots_str += f" <span color='#cbd5e1' font='5'>{count}</span>"
+    return f" <span font='5' rise='-2000'>{dots_str}</span>"
 
 def format_waybar_taskbar():
     apps = build_taskbar_state()

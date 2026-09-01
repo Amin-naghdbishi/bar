@@ -31,7 +31,7 @@ The main panel stays strictly minimal and clean:
 ```
 +---+-------------------------------------------+-----------------------------------------------+
 | 3 |  [󰈹]   []   [󰉋]   [󰨞]                   |  [^]   [EN]   [󰋊]   [󰁹]   [󰂱]   [󰕾]   18:32       |
-|   |  ●●●    ●                                 |                                               |
+|   |  •••    •                                 |                                               |
 +---+-------------------------------------------+-----------------------------------------------+
  Left              Middle                                            Right
  [Workspace]     [Independent App Buttons]       [Tray] -> [KB] -> [Disk] -> [Power] -> [BT] -> [Audio] -> [Clock]
@@ -46,12 +46,12 @@ The main panel stays strictly minimal and clean:
 - **Separate Application Buttons**: Each application has its own completely independent button. No shared cards or surrounding group boxes.
 - **Papirus Icon Integration**: Uses `Papirus-Dark` system icon lookup.
 - **Centered Window Dots Underneath**:
-  - 1 window: `●`
-  - 2 windows: `● ●`
-  - 3 windows: `● ● ●`
-  - 4 windows: `● ● ● ●`
-  - 5 windows: `● ● ● ● ●`
-  - 6+ windows: `● ● ● ● ● 6`
+  - 1 window: `•`
+  - 2 windows: `• •`
+  - 3 windows: `• • •`
+  - 4 windows: `• • • •`
+  - 5 windows: `• • • • •`
+  - 6+ windows: `• • • • • 6`
   - The focused window's dot is highlighted in sky blue (`#38bdf8`), while inactive windows are neutral slate (`#94a3b8`).
 - **Window Grouping Selector Popup**: Clicking an application with multiple open windows opens an interactive window selector to focus or close individual windows.
 - **Application Context Menu**: Right-clicking opens options to open new window, close window, pin/unpin, toggle autostart, or quit.

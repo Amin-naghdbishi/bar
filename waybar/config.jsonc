@@ -63,6 +63,7 @@
     "return-type": "json",
     "format": "{}",
     "tooltip": false,
+    "justify": "center",
     "on-click": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py click 0",
     "on-click-right": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py right-click 0"
   },
@@ -71,6 +72,7 @@
     "return-type": "json",
     "format": "{}",
     "tooltip": false,
+    "justify": "center",
     "on-click": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py click 1",
     "on-click-right": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py right-click 1"
   },
@@ -79,6 +81,7 @@
     "return-type": "json",
     "format": "{}",
     "tooltip": false,
+    "justify": "center",
     "on-click": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py click 2",
     "on-click-right": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py right-click 2"
   },
@@ -87,6 +90,7 @@
     "return-type": "json",
     "format": "{}",
     "tooltip": false,
+    "justify": "center",
     "on-click": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py click 3",
     "on-click-right": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py right-click 3"
   },
@@ -95,6 +99,7 @@
     "return-type": "json",
     "format": "{}",
     "tooltip": false,
+    "justify": "center",
     "on-click": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py click 4",
     "on-click-right": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py right-click 4"
   },
@@ -103,6 +108,7 @@
     "return-type": "json",
     "format": "{}",
     "tooltip": false,
+    "justify": "center",
     "on-click": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py click 5",
     "on-click-right": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py right-click 5"
   },
@@ -111,6 +117,7 @@
     "return-type": "json",
     "format": "{}",
     "tooltip": false,
+    "justify": "center",
     "on-click": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py click 6",
     "on-click-right": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py right-click 6"
   },
@@ -119,6 +126,7 @@
     "return-type": "json",
     "format": "{}",
     "tooltip": false,
+    "justify": "center",
     "on-click": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py click 7",
     "on-click-right": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py right-click 7"
   },
@@ -127,6 +135,7 @@
     "return-type": "json",
     "format": "{}",
     "tooltip": false,
+    "justify": "center",
     "on-click": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py click 8",
     "on-click-right": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py right-click 8"
   },
@@ -135,6 +144,7 @@
     "return-type": "json",
     "format": "{}",
     "tooltip": false,
+    "justify": "center",
     "on-click": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py click 9",
     "on-click-right": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py right-click 9"
   },
@@ -143,6 +153,7 @@
     "return-type": "json",
     "format": "{}",
     "tooltip": false,
+    "justify": "center",
     "on-click": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py click 10",
     "on-click-right": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py right-click 10"
   },
@@ -151,6 +162,7 @@
     "return-type": "json",
     "format": "{}",
     "tooltip": false,
+    "justify": "center",
     "on-click": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py click 11",
     "on-click-right": "python3 $HOME/.config/niri-panel/scripts/taskbar_slot.py right-click 11"
   },

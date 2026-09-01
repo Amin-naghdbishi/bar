@@ -14,6 +14,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
 from popup.common.base import BasePopupWindow, HAS_GI
+from scripts.icon_resolver import resolve_app_icon
 
 if HAS_GI:
     from gi.repository import Gtk, GLib
@@ -44,7 +45,8 @@ class WindowMenuPopup(BasePopupWindow):
     def _build_ui(self):
         windows = get_app_windows(self.app_id)
         app_title = self.app_id.capitalize()
-        header = self.create_header(f"{app_title} Windows", f"{len(windows)} active window(s)", "󰖲")
+        app_icon = resolve_app_icon(self.app_id)
+        header = self.create_header(f"{app_title} Windows", f"{len(windows)} active window(s)", app_icon)
         self.root_box.pack_start(header, False, False, 0)
 
         card = self.create_card()
@@ -68,7 +70,7 @@ class WindowMenuPopup(BasePopupWindow):
                 
                 # Active dot indicator
                 lbl_dot = Gtk.Label()
-                lbl_dot.set_markup("<span color='#38bdf8'>●</span>" if is_focused else "<span color='#64748b'>○</span>")
+                lbl_dot.set_markup("<span color='#38bdf8'>•</span>" if is_focused else "<span color='#64748b'>•</span>")
                 box.pack_start(lbl_dot, False, False, 0)
 
                 lbl_win = Gtk.Label(label=w_title)

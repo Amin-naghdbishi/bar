@@ -147,19 +147,19 @@ def format_dots_underneath(count, is_active):
         dots = []
         for i in range(count):
             if is_active and i == 0:
-                dots.append("<span color='#38bdf8'>●</span>")
+                dots.append("<span color='#38bdf8'>•</span>")
             else:
-                dots.append("<span color='#94a3b8'>●</span>")
+                dots.append("<span color='#94a3b8'>•</span>")
         return " ".join(dots)
     else:
         dots = []
         for i in range(5):
             if is_active and i == 0:
-                dots.append("<span color='#38bdf8'>●</span>")
+                dots.append("<span color='#38bdf8'>•</span>")
             else:
-                dots.append("<span color='#94a3b8'>●</span>")
+                dots.append("<span color='#94a3b8'>•</span>")
         dots_str = " ".join(dots)
-        return f"{dots_str} <span color='#cbd5e1' font='6'>{count}</span>"
+        return f"{dots_str} <span color='#cbd5e1' font='5'>{count}</span>"
 
 def get_slot_output(slot_idx):
     apps = get_apps_list()
@@ -177,15 +177,15 @@ def get_slot_output(slot_idx):
 
     if app["is_active"]:
         line1 = f"<span font='16' color='#ffffff'>{icon}</span>"
-        line2 = f"<span font='6'>{dots_str}</span>"
+        line2 = f"<span font='5'>{dots_str}</span>"
         classes = ["app-slot", "active", f"app-{app['app_id']}"]
     elif app["is_running"]:
         line1 = f"<span font='16' color='#cbd5e1'>{icon}</span>"
-        line2 = f"<span font='6'>{dots_str}</span>"
+        line2 = f"<span font='5'>{dots_str}</span>"
         classes = ["app-slot", "running", f"app-{app['app_id']}"]
     else:
         line1 = f"<span font='16' color='#64748b'>{icon}</span>"
-        line2 = "<span font='6'> </span>"
+        line2 = "<span font='5'> </span>"
         classes = ["app-slot", "pinned", f"app-{app['app_id']}"]
 
     text_content = f"{line1}\n{line2}"

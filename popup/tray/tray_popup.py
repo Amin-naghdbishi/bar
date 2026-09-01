@@ -13,19 +13,20 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
 from popup.common.base import BasePopupWindow, HAS_GI
+from scripts.icon_resolver import resolve_app_icon
 
 if HAS_GI:
     from gi.repository import Gtk, GLib
 
 TRAY_APPS_DATABASE = [
-    {"name": "Telegram", "process": "telegram-desktop", "glyph": ""},
-    {"name": "Discord", "process": "discord", "glyph": ""},
-    {"name": "Hiddify", "process": "hiddify", "glyph": "󰒄"},
-    {"name": "Delta Chat", "process": "deltachat", "glyph": "󰭹"},
-    {"name": "Anki", "process": "anki", "glyph": "󰠮"},
-    {"name": "Spotify", "process": "spotify", "glyph": ""},
-    {"name": "Steam", "process": "steam", "glyph": "󰓓"},
-    {"name": "Bitwarden", "process": "bitwarden", "glyph": "󰞀"}
+    {"name": "Telegram", "process": "telegram-desktop", "glyph": resolve_app_icon("telegram-desktop")},
+    {"name": "Discord", "process": "discord", "glyph": resolve_app_icon("discord")},
+    {"name": "Hiddify", "process": "hiddify", "glyph": resolve_app_icon("hiddify")},
+    {"name": "Delta Chat", "process": "deltachat", "glyph": resolve_app_icon("deltachat")},
+    {"name": "Anki", "process": "anki", "glyph": resolve_app_icon("anki")},
+    {"name": "Spotify", "process": "spotify", "glyph": resolve_app_icon("spotify")},
+    {"name": "Steam", "process": "steam", "glyph": resolve_app_icon("steam")},
+    {"name": "Bitwarden", "process": "bitwarden", "glyph": resolve_app_icon("bitwarden")}
 ]
 
 def check_process_running(proc_name):

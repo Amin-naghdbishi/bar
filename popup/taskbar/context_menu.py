@@ -19,6 +19,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
 from popup.common.base import BasePopupWindow, HAS_GI
+from scripts.icon_resolver import resolve_app_icon
 
 if HAS_GI:
     from gi.repository import Gtk, GLib
@@ -60,7 +61,8 @@ class ContextMenuPopup(BasePopupWindow):
         self._build_ui()
 
     def _build_ui(self):
-        header = self.create_header(self.name, "Application Options", "󰣆")
+        app_icon = resolve_app_icon(self.app_id)
+        header = self.create_header(self.name, "Application Options", app_icon)
         self.root_box.pack_start(header, False, False, 0)
 
         card = self.create_card()
