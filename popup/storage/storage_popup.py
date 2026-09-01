@@ -22,14 +22,14 @@ if HAS_GI:
 
 class StoragePopup(BasePopupWindow):
     def __init__(self):
-        super().__init__(title="Storage Center", width=380, anchor="right", name="storage")
+        super().__init__(title="Storage Center", width=360, anchor="right", name="storage")
         if not HAS_GI:
             return
 
         self._build_ui()
 
     def _build_ui(self):
-        # 1. Header
+        # Header
         header = self.create_header("Storage Center", "Disks & Partitions", "󰋊")
         self.root_box.pack_start(header, False, False, 0)
 
@@ -39,11 +39,11 @@ class StoragePopup(BasePopupWindow):
         scroller.set_propagate_natural_height(True)
         scroller.set_max_content_height(500)
 
-        content_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+        content_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
         scroller.add(content_box)
         self.root_box.pack_start(scroller, True, True, 0)
 
-        # 2. Main Drives / Partitions Overview
+        # 1. Main Drives / Partitions Overview
         content_box.pack_start(self.create_section_title("Partitions"), False, False, 0)
         part_card = self.create_card()
 
@@ -58,7 +58,7 @@ class StoragePopup(BasePopupWindow):
 
         content_box.pack_start(part_card, False, False, 0)
 
-        # 3. Categories Breakdown (Sorted Largest First)
+        # 2. Categories Breakdown (Sorted Largest First)
         content_box.pack_start(self.create_section_title("Category Breakdown"), False, False, 0)
         cat_card = self.create_card()
 
@@ -84,17 +84,16 @@ class StoragePopup(BasePopupWindow):
 
             row.pack_start(top_box, False, False, 0)
 
-            # Visual bar
             pbar = Gtk.ProgressBar()
             pbar.set_fraction(max(0.02, cat["fraction"]))
             row.pack_start(pbar, False, False, 0)
 
-            cat_card.pack_start(row, False, False, 4)
+            cat_card.pack_start(row, False, False, 3)
 
         content_box.pack_start(cat_card, False, False, 0)
 
     def _add_partition_row(self, card_box, label_name, data):
-        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=3)
         
         top = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
         lbl_title = Gtk.Label()
@@ -116,7 +115,7 @@ class StoragePopup(BasePopupWindow):
             pbar.get_style_context().add_class("warning")
         box.pack_start(pbar, False, False, 0)
 
-        card_box.pack_start(box, False, False, 4)
+        card_box.pack_start(box, False, False, 3)
 
 if __name__ == "__main__":
     app = StoragePopup()

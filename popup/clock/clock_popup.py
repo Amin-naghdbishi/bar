@@ -2,10 +2,10 @@
 """
 Interactive Modern Clock & Calendar Popup for Niri
 Features:
-- Large digital clock with seconds
+- Large digital clock with live seconds
 - Full formatted date
 - Interactive GTK Calendar widget with week numbers
-- System time details (Timezone, UTC, Day of year, System Uptime)
+- System time details (Timezone, UTC offset, Day of year, System Uptime)
 """
 
 import os
@@ -14,7 +14,7 @@ import time
 from datetime import datetime
 from pathlib import Path
 
-# Add parent directory to path for imports
+# Add parent directory to path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
 from popup.common.base import BasePopupWindow, HAS_GI
@@ -43,19 +43,18 @@ class ClockPopup(BasePopupWindow):
             return
 
         self._build_ui()
-        # Update clock every second
         GLib.timeout_add(1000, self._update_time)
 
     def _build_ui(self):
-        # 1. Header
+        # Header
         header = self.create_header("Date & Time", "System Calendar", "󰥔")
         self.root_box.pack_start(header, False, False, 0)
 
-        # 2. Large Digital Clock Card
+        # 1. Digital Clock Card
         clock_card = self.create_card()
         
         self.lbl_clock = Gtk.Label()
-        self.lbl_clock.set_markup(f"<span font='28' weight='bold' color='#f8fafc'>{datetime.now().strftime('%H:%M:%S')}</span>")
+        self.lbl_clock.set_markup(f"<span font='24' weight='bold' color='#ffffff'>{datetime.now().strftime('%H:%M:%S')}</span>")
         self.lbl_clock.set_xalign(0.5)
         clock_card.pack_start(self.lbl_clock, False, False, 2)
 
@@ -66,7 +65,7 @@ class ClockPopup(BasePopupWindow):
 
         self.root_box.pack_start(clock_card, False, False, 0)
 
-        # 3. Interactive GTK Calendar
+        # 2. Interactive GTK Calendar
         self.calendar = Gtk.Calendar()
         self.calendar.set_display_options(
             Gtk.CalendarDisplayOptions.SHOW_HEADING |
@@ -75,7 +74,7 @@ class ClockPopup(BasePopupWindow):
         )
         self.root_box.pack_start(self.calendar, False, False, 0)
 
-        # 4. Time Information Card
+        # 3. Time Information Card
         info_card = self.create_card()
         
         now = datetime.now()
@@ -92,7 +91,7 @@ class ClockPopup(BasePopupWindow):
 
         grid = Gtk.Grid()
         grid.set_column_spacing(16)
-        grid.set_row_spacing(6)
+        grid.set_row_spacing(4)
 
         def add_info_row(row, label_text, value_text):
             lbl_k = Gtk.Label(label=label_text)
@@ -116,7 +115,7 @@ class ClockPopup(BasePopupWindow):
 
     def _update_time(self):
         now = datetime.now()
-        self.lbl_clock.set_markup(f"<span font='28' weight='bold' color='#f8fafc'>{now.strftime('%H:%M:%S')}</span>")
+        self.lbl_clock.set_markup(f"<span font='24' weight='bold' color='#ffffff'>{now.strftime('%H:%M:%S')}</span>")
         self.lbl_date.set_markup(f"<span size='medium' color='#38bdf8' weight='semibold'>{now.strftime('%A, %B %d, %Y')}</span>")
         return True
 

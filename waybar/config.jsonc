@@ -2,7 +2,7 @@
   "layer": "top",
   "position": "bottom",
   "height": 44,
-  "spacing": 4,
+  "spacing": 2,
   "margin-top": 0,
   "margin-bottom": 0,
   "margin-left": 0,
@@ -12,15 +12,15 @@
   // Module Layout Configuration
   // ---------------------------------------------------------------------------
   // LEFT:   [ Current Workspace Number ]
-  // MIDDLE: [ Pinned & Running Applications ]
-  // RIGHT:  [ Clock ] [ Audio ] [ Bluetooth ] [ Battery/Power ] [ Storage ] [ Keyboard ] [ Tray Overflow ]
+  // MIDDLE: [ Application Taskbar - Individual App Buttons ]
+  // RIGHT:  [ Clock ] -> [ Audio ] -> [ Bluetooth ] -> [ Battery ] -> [ Storage ] -> [ Keyboard ] -> [ Tray ]
   // ---------------------------------------------------------------------------
   "modules-left": [
     "custom/workspace"
   ],
 
   "modules-center": [
-    "custom/taskbar"
+    "wlr/taskbar"
   ],
 
   "modules-right": [
@@ -35,8 +35,7 @@
 
   // ---------------------------------------------------------------------------
   // LEFT SECTION: Minimal Workspace Indicator
-  // Shows ONLY the current Niri workspace number (e.g. 1, 2, 3)
-  // No buttons, no workspace list, no switcher
+  // Shows ONLY the active Niri workspace number (e.g. 1, 2, 3)
   // ---------------------------------------------------------------------------
   "custom/workspace": {
     "exec": "python3 $HOME/.config/niri-panel/scripts/workspace.py --watch",
@@ -46,39 +45,43 @@
   },
 
   // ---------------------------------------------------------------------------
-  // CENTER SECTION: Niri Application Taskbar
-  // Pinned apps, running apps, multi-window dots (● ● ●), active indicators
-  // Left-click: Launch / Focus / Window Selector Popup
-  // Right-click: Context Menu (New window, Close, Pin/Unpin, Autostart, Quit)
+  // CENTER SECTION: Native Application Taskbar
+  // Each application is a separate individual button with Papirus icon
+  // Subtle indicator underline, active state, and right-click options
   // ---------------------------------------------------------------------------
-  "custom/taskbar": {
-    "exec": "python3 $HOME/.config/niri-panel/scripts/taskbar.py --watch",
-    "return-type": "json",
-    "format": "{}",
-    "on-click": "python3 $HOME/.config/niri-panel/scripts/taskbar.py --click",
-    "on-click-right": "python3 $HOME/.config/niri-panel/scripts/taskbar.py --right-click"
+  "wlr/taskbar": {
+    "format": "{icon}",
+    "icon-size": 22,
+    "icon-theme": "Papirus-Dark",
+    "tooltip-format": "{title}",
+    "on-click": "activate",
+    "on-click-middle": "close",
+    "on-click-right": "fullscreen",
+    "all-outputs": true,
+    "active-first": false
   },
 
   // ---------------------------------------------------------------------------
-  // RIGHT SECTION: Clean System Modules & Centers
-  // Rule: Only icons & minimal text in the main bar. Details inside popups.
+  // RIGHT SECTION: Ordered System Modules & Popup Triggers
+  // EXACT ORDER: Clock -> Audio -> Bluetooth -> Battery/Power -> Storage -> Keyboard -> Tray
+  // Clicking any icon opens a real independent floating popup window.
   // ---------------------------------------------------------------------------
 
-  // 1. Clock (Show ONLY HH:MM, no icon)
+  // 1. Clock (FIRST ITEM on right side, HH:MM, no icon)
   "clock": {
     "interval": 1,
     "format": "{:%H:%M}",
-    "tooltip": true,
-    "tooltip-format": "Date: {:%A, %B %d, %Y}\nClick to open Calendar & Time Center",
+    "tooltip": false,
     "on-click": "$HOME/.config/niri-panel/scripts/popup_manager.sh clock"
   },
 
-  // 2. Audio Center (Single Speaker Icon ONLY - Mic is combined inside popup)
+  // 2. Audio Center (Single Speaker Icon ONLY - Mic combined inside popup)
   "custom/audio": {
     "exec": "python3 $HOME/.config/niri-panel/scripts/audio_status.py",
     "return-type": "json",
     "interval": 1,
     "format": "{}",
+    "tooltip": false,
     "on-click": "$HOME/.config/niri-panel/scripts/popup_manager.sh audio",
     "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle 2>/dev/null || pactl set-sink-mute @DEFAULT_SINK@ toggle",
     "on-scroll-up": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+ 2>/dev/null || pactl set-sink-volume @DEFAULT_SINK@ +5%",
@@ -91,24 +94,27 @@
     "return-type": "json",
     "interval": 3,
     "format": "{}",
+    "tooltip": false,
     "on-click": "$HOME/.config/niri-panel/scripts/popup_manager.sh bluetooth"
   },
 
-  // 4. Battery & Power Center (Battery Icon only, no percentage text)
+  // 4. Battery & Power Center (Battery Icon only)
   "custom/battery": {
     "exec": "python3 $HOME/.config/niri-panel/scripts/battery_status.py",
     "return-type": "json",
     "interval": 4,
     "format": "{}",
+    "tooltip": false,
     "on-click": "$HOME/.config/niri-panel/scripts/popup_manager.sh battery"
   },
 
-  // 5. Storage Center (Disk Icon only, no percentage text)
+  // 5. Storage Center (Disk Icon only)
   "custom/storage": {
     "exec": "python3 $HOME/.config/niri-panel/scripts/storage_status.py",
     "return-type": "json",
     "interval": 30,
     "format": "{}",
+    "tooltip": false,
     "on-click": "$HOME/.config/niri-panel/scripts/popup_manager.sh storage"
   },
 
@@ -118,14 +124,14 @@
     "return-type": "json",
     "interval": 1,
     "format": "{}",
+    "tooltip": false,
     "on-click": "$HOME/.config/niri-panel/scripts/popup_manager.sh keyboard"
   },
 
   // 7. System Tray Overflow ([^] Chevron Icon)
   "custom/tray-overflow": {
     "format": "󰅃",
-    "tooltip": true,
-    "tooltip-format": "<b>System Tray Overflow</b>\nClick to view background running apps",
+    "tooltip": false,
     "on-click": "$HOME/.config/niri-panel/scripts/popup_manager.sh tray"
   }
 }

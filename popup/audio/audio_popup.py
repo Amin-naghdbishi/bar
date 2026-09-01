@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """
 Interactive Audio Center Popup for Niri
-Features:
-- Master Output Volume slider with mute button
-- Output device switcher (Speakers, Headphones, HDMI)
-- Microphone slider with mute toggle and input device switcher
-- Running Application audio streams volume control
+Provides:
+- Output volume slider & percentage
+- Output audio device switcher (Speakers, Headphones, HDMI...)
+- Microphone volume slider & mute toggle button
+- Input device switcher (Internal Mic, Headset Mic...)
+- Application audio streams volume controls
 """
 
 import sys
@@ -22,28 +23,28 @@ if HAS_GI:
 
 class AudioPopup(BasePopupWindow):
     def __init__(self):
-        super().__init__(title="Audio Center", width=380, anchor="right", name="audio")
+        super().__init__(title="Audio Center", width=360, anchor="right", name="audio")
         if not HAS_GI:
             return
 
         self._build_ui()
 
     def _build_ui(self):
-        # 1. Header
-        header = self.create_header("Audio Center", "PipeWire / WirePlumber", "󰕾")
+        # Header
+        header = self.create_header("Audio Center", "Volume & Devices", "󰕾")
         self.root_box.pack_start(header, False, False, 0)
 
-        # Scrolled container for rich controls
+        # Scroller
         scroller = Gtk.ScrolledWindow()
         scroller.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         scroller.set_propagate_natural_height(True)
-        scroller.set_max_content_height(480)
+        scroller.set_max_content_height(500)
 
-        content_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+        content_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
         scroller.add(content_box)
         self.root_box.pack_start(scroller, True, True, 0)
 
-        # 2. Output Volume Card
+        # 1. Output Volume Card
         content_box.pack_start(self.create_section_title("Output Volume"), False, False, 0)
         out_card = self.create_card()
 
@@ -52,6 +53,8 @@ class AudioPopup(BasePopupWindow):
         out_hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
         self.btn_out_mute = Gtk.Button(label="󰝟" if is_muted else "󰕾")
         self.btn_out_mute.get_style_context().add_class("icon-btn")
+        if is_muted:
+            self.btn_out_mute.get_style_context().add_class("active")
         self.btn_out_mute.connect("clicked", self._on_out_mute_toggle)
         out_hbox.pack_start(self.btn_out_mute, False, False, 0)
 
@@ -70,7 +73,7 @@ class AudioPopup(BasePopupWindow):
         # Output Devices List
         sinks = AudioBackend.get_sinks()
         if sinks:
-            dev_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
+            dev_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=3)
             for sink in sinks:
                 btn_sink = Gtk.Button()
                 btn_sink.get_style_context().add_class("action-btn")
@@ -85,8 +88,8 @@ class AudioPopup(BasePopupWindow):
 
         content_box.pack_start(out_card, False, False, 0)
 
-        # 3. Microphone (Input) Card
-        content_box.pack_start(self.create_section_title("Microphone (Input)"), False, False, 0)
+        # 2. Microphone (Input) Card
+        content_box.pack_start(self.create_section_title("Microphone"), False, False, 0)
         mic_card = self.create_card()
 
         mic_vol, mic_muted = AudioBackend.get_mic_volume()
@@ -110,12 +113,29 @@ class AudioPopup(BasePopupWindow):
         mic_hbox.pack_start(self.lbl_mic_vol, False, False, 0)
 
         mic_card.pack_start(mic_hbox, False, False, 0)
+
+        # Input Devices List
+        sources = AudioBackend.get_sources()
+        if sources:
+            src_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=3)
+            for src in sources:
+                btn_src = Gtk.Button()
+                btn_src.get_style_context().add_class("action-btn")
+                if src.get("is_default"):
+                    btn_src.get_style_context().add_class("active")
+                
+                src_label = f"{'✓ ' if src.get('is_default') else '  '}{src['description']}"
+                btn_src.set_label(src_label)
+                btn_src.connect("clicked", lambda b, s_id=src["id"]: self._on_source_select(s_id))
+                src_box.pack_start(btn_src, False, False, 0)
+            mic_card.pack_start(src_box, False, False, 0)
+
         content_box.pack_start(mic_card, False, False, 0)
 
-        # 4. Applications Volume Streams
+        # 3. Application Streams
         app_streams = AudioBackend.get_app_streams()
         if app_streams:
-            content_box.pack_start(self.create_section_title("Application Streams"), False, False, 0)
+            content_box.pack_start(self.create_section_title("Applications"), False, False, 0)
             apps_card = self.create_card()
             for st in app_streams:
                 row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
@@ -148,6 +168,10 @@ class AudioPopup(BasePopupWindow):
         AudioBackend.toggle_master_mute()
         vol, muted = AudioBackend.get_master_volume()
         btn.set_label("󰝟" if muted else "󰕾")
+        if muted:
+            btn.get_style_context().add_class("active")
+        else:
+            btn.get_style_context().remove_class("active")
 
     def _on_mic_vol_changed(self, scale):
         val = int(scale.get_value())
@@ -167,9 +191,12 @@ class AudioPopup(BasePopupWindow):
         AudioBackend.set_default_sink(sink_id)
         self.close()
 
+    def _on_source_select(self, source_id):
+        AudioBackend.set_default_source(source_id)
+        self.close()
+
     def _on_stream_mute_toggle(self, stream_id, btn):
         AudioBackend.toggle_app_mute(stream_id)
-        # Update icon
         cur = btn.get_label()
         btn.set_label("󰕾" if cur == "󰝟" else "󰝟")
 

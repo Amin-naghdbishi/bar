@@ -2,9 +2,9 @@
 """
 Interactive Battery and Power Center Popup for Niri
 Features:
-- Battery status, remaining time estimate, and AC power status
+- Battery percentage, charging status, and remaining time
 - Power profile selector (Performance, Balanced, Power Saver)
-- Brightness slider
+- Display Brightness slider
 - Night Light (Blue Light Filter) toggle
 - 80% Battery Protection toggle
 - System power actions (Lock, Suspend, Reboot, Shutdown)
@@ -24,15 +24,15 @@ if HAS_GI:
 
 class BatteryPopup(BasePopupWindow):
     def __init__(self):
-        super().__init__(title="Battery & Power", width=380, anchor="right", name="battery")
+        super().__init__(title="Battery & Power", width=360, anchor="right", name="battery")
         if not HAS_GI:
             return
 
         self._build_ui()
 
     def _build_ui(self):
-        # 1. Header
-        header = self.create_header("Battery & Power", "System Power Management", "󰂄")
+        # Header
+        header = self.create_header("Power & Battery", "Power Management", "󰂄")
         self.root_box.pack_start(header, False, False, 0)
 
         # Scroller
@@ -41,23 +41,21 @@ class BatteryPopup(BasePopupWindow):
         scroller.set_propagate_natural_height(True)
         scroller.set_max_content_height(500)
 
-        content_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+        content_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
         scroller.add(content_box)
         self.root_box.pack_start(scroller, True, True, 0)
 
         info = BatteryBackend.get_power_info()
 
-        # 2. Battery & Power Status Card
+        # 1. Battery Status Card
         status_card = self.create_card()
         
         stat_top = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
         
-        # Big percentage badge
         lbl_pct = Gtk.Label()
-        lbl_pct.set_markup(f"<span font='26' weight='bold' color='#38bdf8'>{info['capacity']}%</span>")
+        lbl_pct.set_markup(f"<span font='22' weight='bold' color='#38bdf8'>{info['capacity']}%</span>")
         stat_top.pack_start(lbl_pct, False, False, 0)
 
-        # Status text
         stat_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
         lbl_stat = Gtk.Label()
         ac_str = "Using Charger" if info["is_ac"] or "charg" in info["status"].lower() else "Using Battery"
@@ -74,7 +72,6 @@ class BatteryPopup(BasePopupWindow):
         stat_top.pack_start(stat_vbox, True, True, 0)
         status_card.pack_start(stat_top, False, False, 0)
 
-        # Progress bar
         pbar = Gtk.ProgressBar()
         pbar.set_fraction(info["capacity"] / 100.0)
         if info["capacity"] <= 15:
@@ -85,7 +82,7 @@ class BatteryPopup(BasePopupWindow):
 
         content_box.pack_start(status_card, False, False, 0)
 
-        # 3. Power Modes (Performance / Balanced / Power Saver)
+        # 2. Power Modes
         content_box.pack_start(self.create_section_title("Power Mode"), False, False, 0)
         modes_card = self.create_card()
         modes_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
@@ -106,7 +103,7 @@ class BatteryPopup(BasePopupWindow):
         self.btn_balanced.connect("clicked", lambda b: self._on_set_profile("balanced"))
         modes_box.pack_start(self.btn_balanced, True, True, 0)
 
-        self.btn_perf = Gtk.Button(label="󰓅 Perf")
+        self.btn_perf = Gtk.Button(label="󰓅 Performance")
         self.btn_perf.get_style_context().add_class("action-btn")
         if "performance" in current_profile:
             self.btn_perf.get_style_context().add_class("active")
@@ -116,8 +113,8 @@ class BatteryPopup(BasePopupWindow):
         modes_card.pack_start(modes_box, False, False, 0)
         content_box.pack_start(modes_card, False, False, 0)
 
-        # 4. Display Brightness Slider
-        content_box.pack_start(self.create_section_title("Display Brightness"), False, False, 0)
+        # 3. Display Brightness Slider
+        content_box.pack_start(self.create_section_title("Brightness"), False, False, 0)
         bright_card = self.create_card()
         bright_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
 
@@ -139,8 +136,8 @@ class BatteryPopup(BasePopupWindow):
         bright_card.pack_start(bright_box, False, False, 0)
         content_box.pack_start(bright_card, False, False, 0)
 
-        # 5. Night Light & Battery Protection Toggles
-        content_box.pack_start(self.create_section_title("Features & Protection"), False, False, 0)
+        # 4. Night Light & Battery Protection
+        content_box.pack_start(self.create_section_title("Protection & Comfort"), False, False, 0)
         feats_card = self.create_card()
 
         # Night Light
@@ -157,7 +154,7 @@ class BatteryPopup(BasePopupWindow):
 
         # Battery 80% Protection
         prot_row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
-        lbl_prot = Gtk.Label(label="󰂄 Battery Protection (80% Limit)")
+        lbl_prot = Gtk.Label(label="󰂄 80% Charge Limit (Battery Health)")
         lbl_prot.set_xalign(0)
         prot_row.pack_start(lbl_prot, True, True, 0)
 
@@ -169,7 +166,7 @@ class BatteryPopup(BasePopupWindow):
 
         content_box.pack_start(feats_card, False, False, 0)
 
-        # 6. Quick Power Actions
+        # 5. Quick Power Actions
         content_box.pack_start(self.create_section_title("Power Actions"), False, False, 0)
         acts_card = self.create_card()
         acts_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)

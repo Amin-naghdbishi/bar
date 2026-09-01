@@ -3,9 +3,9 @@
 Interactive Bluetooth Center Popup for Niri
 Features:
 - Master Bluetooth Toggle (ON / OFF)
-- Scan for nearby devices
-- Connected devices list (with Disconnect & Battery %)
-- Paired & Available devices list (with Connect, Pair)
+- Device scanner
+- Connected devices list (Disconnect & Battery info)
+- Paired & Available devices list (Connect & Pair)
 """
 
 import sys
@@ -22,14 +22,14 @@ if HAS_GI:
 
 class BluetoothPopup(BasePopupWindow):
     def __init__(self):
-        super().__init__(title="Bluetooth Center", width=380, anchor="right", name="bluetooth")
+        super().__init__(title="Bluetooth Center", width=360, anchor="right", name="bluetooth")
         if not HAS_GI:
             return
 
         self._build_ui()
 
     def _build_ui(self):
-        # 1. Header
+        # Header
         header = self.create_header("Bluetooth", "Wireless Devices", "󰂯")
         self.root_box.pack_start(header, False, False, 0)
 
@@ -39,11 +39,11 @@ class BluetoothPopup(BasePopupWindow):
         scroller.set_propagate_natural_height(True)
         scroller.set_max_content_height(480)
 
-        self.content_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+        self.content_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
         scroller.add(self.content_box)
         self.root_box.pack_start(scroller, True, True, 0)
 
-        # 2. Master Toggle & Scan Card
+        # 1. Master Toggle & Scan Card
         top_card = self.create_card()
         top_row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
 
@@ -65,20 +65,19 @@ class BluetoothPopup(BasePopupWindow):
         top_card.pack_start(top_row, False, False, 0)
         self.content_box.pack_start(top_card, False, False, 0)
 
-        # 3. Connected Devices Section
+        # 2. Connected Devices Section
         self.content_box.pack_start(self.create_section_title("Connected Devices"), False, False, 0)
         self.conn_card = self.create_card()
         self._populate_connected_devices()
         self.content_box.pack_start(self.conn_card, False, False, 0)
 
-        # 4. Paired & Available Devices Section
+        # 3. Paired & Available Devices Section
         self.content_box.pack_start(self.create_section_title("Paired & Available Devices"), False, False, 0)
         self.avail_card = self.create_card()
         self._populate_available_devices()
         self.content_box.pack_start(self.avail_card, False, False, 0)
 
     def _populate_connected_devices(self):
-        # Clear existing
         for c in self.conn_card.get_children():
             self.conn_card.remove(c)
 
@@ -125,7 +124,6 @@ class BluetoothPopup(BasePopupWindow):
         paired = BluetoothBackend.get_paired_and_available_devices()
         connected_macs = [d["mac"] for d in BluetoothBackend.get_connected_devices()]
         
-        # Filter out already connected
         available = [d for d in paired if d["mac"] not in connected_macs]
 
         if not available:

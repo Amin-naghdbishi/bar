@@ -1,5 +1,5 @@
 """
-Audio backend using PipeWire / WirePlumber (wpctl) & PulseAudio (pactl)
+PipeWire / WirePlumber audio backend for Audio Popup
 """
 
 import json
@@ -102,7 +102,6 @@ class AudioBackend:
     @staticmethod
     def get_sinks():
         sinks = []
-        # Try pactl json first
         try:
             p = subprocess.run(["pactl", "-f", "json", "list", "sinks"], capture_output=True, text=True, timeout=1)
             if p.returncode == 0:
@@ -111,17 +110,17 @@ class AudioBackend:
                     sinks.append({
                         "id": str(item.get("index", "")),
                         "name": item.get("name", ""),
-                        "description": item.get("description", item.get("name", "Unknown Sink")),
+                        "description": item.get("description", item.get("name", "Unknown Output")),
                         "is_default": item.get("state") == "RUNNING" or "default" in item.get("name", "").lower()
                     })
         except Exception:
             pass
 
         if not sinks:
-            # Fallback default sinks
             sinks = [
-                {"id": "1", "name": "speakers", "description": "Built-in Speakers / Headphones", "is_default": True},
-                {"id": "2", "name": "hdmi", "description": "HDMI / DisplayPort Audio", "is_default": False}
+                {"id": "1", "name": "speakers", "description": "Built-in Speakers", "is_default": True},
+                {"id": "2", "name": "headphones", "description": "Headphones", "is_default": False},
+                {"id": "3", "name": "hdmi", "description": "HDMI Audio Output", "is_default": False}
             ]
         return sinks
 
@@ -132,6 +131,41 @@ class AudioBackend:
         except Exception:
             try:
                 subprocess.run(["pactl", "set-default-sink", str(sink_id_or_name)])
+            except Exception:
+                pass
+
+    @staticmethod
+    def get_sources():
+        sources = []
+        try:
+            p = subprocess.run(["pactl", "-f", "json", "list", "sources"], capture_output=True, text=True, timeout=1)
+            if p.returncode == 0:
+                data = json.loads(p.stdout)
+                for item in data:
+                    name = item.get("name", "")
+                    if "monitor" not in name.lower():
+                        sources.append({
+                            "id": str(item.get("index", "")),
+                            "name": name,
+                            "description": item.get("description", name),
+                            "is_default": item.get("state") == "RUNNING"
+                        })
+        except Exception:
+            pass
+        if not sources:
+            sources = [
+                {"id": "1", "name": "internal_mic", "description": "Internal Microphone", "is_default": True},
+                {"id": "2", "name": "headset_mic", "description": "Headset Microphone", "is_default": False}
+            ]
+        return sources
+
+    @staticmethod
+    def set_default_source(source_id_or_name):
+        try:
+            subprocess.run(["wpctl", "set-default", str(source_id_or_name)])
+        except Exception:
+            try:
+                subprocess.run(["pactl", "set-default-source", str(source_id_or_name)])
             except Exception:
                 pass
 
@@ -148,7 +182,6 @@ class AudioBackend:
                     vol_pct = 100
                     vol_dict = item.get("volume", {})
                     if vol_dict:
-                        # e.g. {"front-left": {"value_percent": "80%"}}
                         for ch, ch_data in vol_dict.items():
                             if isinstance(ch_data, dict) and "value_percent" in ch_data:
                                 m = re.search(r"(\d+)%", str(ch_data["value_percent"]))
