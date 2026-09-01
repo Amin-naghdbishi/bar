@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 """
 Niri Dynamic Application Taskbar for Waybar
-Handles:
-- Pinned applications (always shown)
-- Running applications (detected via Niri IPC)
-- Multi-window grouping with dot indicators (●, ● ●, ● ● ●)
-- Active window state tracking
-- Left click (Launch / Focus / Group Selector)
-- Right click (Context menu: New window, Close, Pin/Unpin, Autostart, Quit)
+- Groups multiple windows under a single application icon
+- Shows small subtle dots underneath for open windows (●, ● ●, ● ● ●)
+- Highlights active window dot
+- Resolves proper Papirus application icons
+- Left click: Focus window or open Window Grouping Selector Popup
+- Right click: Application Context Menu Popup
 """
 
 import json
@@ -17,14 +16,14 @@ import sys
 import time
 from pathlib import Path
 
-# Paths to config
 CONFIG_DIRS = [
     Path.home() / ".config" / "niri-panel",
-    Path(__file__).resolve().parent.parent / "config"
+    Path(__file__).resolve().parent.parent / "config",
+    Path.cwd() / "config"
 ]
 
 DEFAULT_PINNED = [
-    {"name": "Firefox", "app_id": "firefox", "icon": "firefox", "exec": "firefox", "autostart": false if False else False},
+    {"name": "Firefox", "app_id": "firefox", "icon": "firefox", "exec": "firefox", "autostart": False},
     {"name": "Terminal", "app_id": "alacritty", "icon": "utilities-terminal", "exec": "alacritty", "autostart": False},
     {"name": "Files", "app_id": "nautilus", "icon": "system-file-manager", "exec": "nautilus", "autostart": False},
     {"name": "Editor", "app_id": "code", "icon": "visual-studio-code", "exec": "code", "autostart": False}
@@ -36,34 +35,48 @@ ICON_MAP = {
     "google-chrome": "",
     "chromium": "",
     "brave-browser": "󰖟",
+    "brave": "󰖟",
     "alacritty": "",
     "kitty": "󰄛",
     "wezterm": "",
     "org.wezfurlong.wezterm": "",
     "foot": "",
     "gnome-terminal": "",
+    "tilix": "",
+    "konsole": "",
+    "xterm": "",
     "nautilus": "󰉋",
     "org.gnome.Nautilus": "󰉋",
     "thunar": "󰉋",
     "dolphin": "󰉋",
+    "nemo": "󰉋",
+    "pcmanfm": "󰉋",
     "code": "󰨞",
     "visual-studio-code": "󰨞",
     "vscodium": "󰨞",
     "gedit": "󰷈",
+    "kate": "󰷈",
+    "mousepad": "󰷈",
     "telegramdesktop": "",
     "org.telegram.desktop": "",
+    "telegram-desktop": "",
     "discord": "",
+    "vesktop": "",
     "spotify": "",
     "spotify-launcher": "",
     "obsidian": "󱓧",
     "steam": "󰓓",
     "gimp": "",
+    "org.gimp.GIMP": "",
     "inkscape": "",
     "blender": "󰂫",
     "mpv": "",
     "vlc": "󰕼",
     "hiddify": "󰒄",
     "anki": "󰠮",
+    "pavucontrol": "󰕾",
+    "settings": "󰒓",
+    "gnome-control-center": "󰒓",
     "default": "󰣆"
 }
 
@@ -72,7 +85,6 @@ def get_config_file(filename):
         p = d / filename
         if p.exists():
             return p
-    # Fallback to creating in ~/.config/niri-panel
     p = Path.home() / ".config" / "niri-panel" / filename
     p.parent.mkdir(parents=True, exist_ok=True)
     return p
@@ -86,12 +98,6 @@ def load_pinned():
         except Exception:
             pass
     return list(DEFAULT_PINNED)
-
-def save_pinned(pinned_list):
-    p = get_config_file("pinned.json")
-    p.parent.mkdir(parents=True, exist_ok=True)
-    with open(p, "w", encoding="utf-8") as f:
-        json.dump(pinned_list, f, indent=2)
 
 def get_niri_windows():
     try:
@@ -120,25 +126,13 @@ def get_icon_glyph(app_id):
             return v
     return ICON_MAP["default"]
 
-def get_dot_indicators(count):
-    if count <= 0:
-        return ""
-    if count == 1:
-        return " ●"
-    if count == 2:
-        return " ●●"
-    if count == 3:
-        return " ●●●"
-    return f" ●{count}"
-
 def build_taskbar_state():
     pinned_apps = load_pinned()
     running_windows = get_niri_windows()
     
-    # Group running windows by app_id
     grouped_windows = {}
     for win in running_windows:
-        app_id = win.get("app_id") or win.get("appId") or "unknown"
+        app_id = (win.get("app_id") or win.get("appId") or "unknown").lower()
         if app_id not in grouped_windows:
             grouped_windows[app_id] = []
         grouped_windows[app_id].append(win)
@@ -146,17 +140,15 @@ def build_taskbar_state():
     apps = []
     seen_app_ids = set()
 
-    # 1. Process Pinned Apps
+    # 1. Pinned Apps
     for pin in pinned_apps:
-        app_id = pin.get("app_id", "")
+        app_id = pin.get("app_id", "").lower()
         seen_app_ids.add(app_id)
         
-        # Check if running
         windows = grouped_windows.get(app_id, [])
-        # Also check for alternate case / sub-matches
         if not windows:
             for k, wins in grouped_windows.items():
-                if k.lower() == app_id.lower() or app_id.lower() in k.lower():
+                if k == app_id or app_id in k or k in app_id:
                     windows = wins
                     seen_app_ids.add(k)
                     break
@@ -176,7 +168,7 @@ def build_taskbar_state():
             "glyph": get_icon_glyph(app_id)
         })
 
-    # 2. Process Unpinned Running Apps
+    # 2. Running unpinned apps
     for app_id, windows in grouped_windows.items():
         if app_id in seen_app_ids:
             continue
@@ -202,33 +194,47 @@ def build_taskbar_state():
 
     return apps
 
+def format_dots(count, is_active):
+    if count <= 0:
+        return ""
+    
+    dots_markup = []
+    for i in range(count):
+        if is_active and i == 0:
+            # Active window dot is illuminated sky-blue
+            dots_markup.append("<span color='#38bdf8'>●</span>")
+        else:
+            # Running window dot is neutral white/slate
+            dots_markup.append("<span color='#94a3b8'>●</span>")
+    
+    dots_str = " ".join(dots_markup)
+    return f" <span font='7' rise='-2000'>{dots_str}</span>"
+
 def format_waybar_taskbar():
     apps = build_taskbar_state()
     items = []
-    tooltip_lines = ["<b>Applications:</b>"]
     
-    classes = ["taskbar-container"]
-    if any(a["is_active"] for a in apps):
-        classes.append("has-active")
-
     for a in apps:
         glyph = a["glyph"]
-        dots = get_dot_indicators(a["window_count"]) if a["is_running"] else ""
-        item_text = f"{glyph}{dots}"
-        items.append(item_text)
+        dots = format_dots(a["window_count"], a["is_active"]) if a["is_running"] else ""
         
-        status = "● Active" if a["is_active"] else ("Running" if a["is_running"] else "Pinned")
-        cnt = f" ({a['window_count']} windows)" if a["window_count"] > 1 else ""
-        tooltip_lines.append(f"• <b>{a['name']}</b>{cnt} - <i>{status}</i>")
+        if a["is_active"]:
+            item_markup = f"<span color='#ffffff' font='15'>{glyph}</span>{dots}"
+        elif a["is_running"]:
+            item_markup = f"<span color='#cbd5e1' font='15'>{glyph}</span>{dots}"
+        else:
+            # Pinned only
+            item_markup = f"<span color='#64748b' font='15'>{glyph}</span>"
+            
+        items.append(item_markup)
 
-    text_repr = "   ".join(items) if items else "󰣆"
-    tooltip = "\n".join(tooltip_lines)
+    text_repr = "    ".join(items) if items else "󰣆"
     
     return json.dumps({
         "text": text_repr,
         "alt": "taskbar",
-        "tooltip": tooltip,
-        "class": classes
+        "tooltip": False,
+        "class": ["taskbar-container"]
     })
 
 def handle_click(app_id_or_index=None):
@@ -248,7 +254,6 @@ def handle_click(app_id_or_index=None):
                     target_app = a
                     break
     if not target_app and apps:
-        # Default to first active or first running
         target_app = next((a for a in apps if a["is_active"]), apps[0])
 
     if not target_app:
@@ -267,13 +272,15 @@ def handle_click(app_id_or_index=None):
             subprocess.run(["niri", "msg", "action", "focus-window", "--id", str(win_id)])
         return
 
-    # Scenario 3: Multiple Windows -> Open Window Grouping Selector Popup
+    # Scenario 3: Multiple Windows -> Open real Window Grouping Selector Popup
     script_dir = Path(__file__).resolve().parent
     window_menu_py = script_dir.parent / "popup" / "taskbar" / "window_menu.py"
+    if not window_menu_py.exists():
+        window_menu_py = Path.home() / ".config" / "niri-panel" / "popup" / "taskbar" / "window_menu.py"
+        
     if window_menu_py.exists():
         subprocess.Popen([sys.executable, str(window_menu_py), "--app", target_app["app_id"]])
     else:
-        # Fallback focus first
         win_id = target_app["windows"][0].get("id")
         if win_id is not None:
             subprocess.run(["niri", "msg", "action", "focus-window", "--id", str(win_id)])
@@ -301,6 +308,9 @@ def handle_right_click(app_id_or_index=None):
 
     script_dir = Path(__file__).resolve().parent
     context_menu_py = script_dir.parent / "popup" / "taskbar" / "context_menu.py"
+    if not context_menu_py.exists():
+        context_menu_py = Path.home() / ".config" / "niri-panel" / "popup" / "taskbar" / "context_menu.py"
+
     if context_menu_py.exists():
         subprocess.Popen([
             sys.executable,
@@ -312,21 +322,6 @@ def handle_right_click(app_id_or_index=None):
             "--running", "1" if target_app["is_running"] else "0"
         ])
 
-def handle_pin_toggle(app_id, name=None, exec_cmd=None):
-    pinned = load_pinned()
-    existing = [p for p in pinned if p.get("app_id") == app_id]
-    if existing:
-        pinned = [p for p in pinned if p.get("app_id") != app_id]
-    else:
-        pinned.append({
-            "name": name or app_id.capitalize(),
-            "app_id": app_id,
-            "icon": app_id,
-            "exec": exec_cmd or app_id,
-            "autostart": False
-        })
-    save_pinned(pinned)
-
 def stream_taskbar():
     prev_output = ""
     while True:
@@ -334,7 +329,7 @@ def stream_taskbar():
         if curr_output != prev_output:
             print(curr_output, flush=True)
             prev_output = curr_output
-        time.sleep(0.5)
+        time.sleep(0.4)
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
@@ -347,11 +342,6 @@ if __name__ == "__main__":
         elif cmd == "--right-click":
             arg = sys.argv[2] if len(sys.argv) > 2 else None
             handle_right_click(arg)
-        elif cmd == "--pin-toggle":
-            app_id = sys.argv[2] if len(sys.argv) > 2 else ""
-            name = sys.argv[3] if len(sys.argv) > 3 else None
-            exec_cmd = sys.argv[4] if len(sys.argv) > 4 else None
-            handle_pin_toggle(app_id, name, exec_cmd)
         elif cmd == "--json":
             print(json.dumps(build_taskbar_state(), indent=2))
         else:

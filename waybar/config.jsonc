@@ -12,7 +12,7 @@
   // Module Layout Configuration
   // ---------------------------------------------------------------------------
   // LEFT:   [ Current Workspace Number ]
-  // MIDDLE: [ Application Taskbar - Individual App Buttons ]
+  // MIDDLE: [ Grouped Application Taskbar with Window Dots ]
   // RIGHT:  [ Clock ] -> [ Audio ] -> [ Bluetooth ] -> [ Battery ] -> [ Storage ] -> [ Keyboard ] -> [ Tray ]
   // ---------------------------------------------------------------------------
   "modules-left": [
@@ -20,7 +20,7 @@
   ],
 
   "modules-center": [
-    "wlr/taskbar"
+    "custom/taskbar"
   ],
 
   "modules-right": [
@@ -34,37 +34,35 @@
   ],
 
   // ---------------------------------------------------------------------------
-  // LEFT SECTION: Minimal Workspace Indicator
-  // Shows ONLY the active Niri workspace number (e.g. 1, 2, 3)
+  // LEFT SECTION: Minimal Workspace Indicator (Active Workspace Number Only)
   // ---------------------------------------------------------------------------
   "custom/workspace": {
     "exec": "python3 $HOME/.config/niri-panel/scripts/workspace.py --watch",
     "return-type": "json",
     "format": "{}",
-    "tooltip": true
+    "tooltip": false
   },
 
   // ---------------------------------------------------------------------------
-  // CENTER SECTION: Native Application Taskbar
-  // Each application is a separate individual button with Papirus icon
-  // Subtle indicator underline, active state, and right-click options
+  // CENTER SECTION: Niri Application Taskbar
+  // - One icon per application (groups multiple windows)
+  // - Subtle window indicators underneath (●, ● ●, ● ● ●)
+  // - Clean icon-only design (no card backgrounds, no blue underline)
+  // - Left-click: Focus or Window Selector Popup for multiple windows
+  // - Right-click: Context Menu Popup
   // ---------------------------------------------------------------------------
-  "wlr/taskbar": {
-    "format": "{icon}",
-    "icon-size": 22,
-    "icon-theme": "Papirus-Dark",
-    "tooltip-format": "{title}",
-    "on-click": "activate",
-    "on-click-middle": "close",
-    "on-click-right": "fullscreen",
-    "all-outputs": true,
-    "active-first": false
+  "custom/taskbar": {
+    "exec": "python3 $HOME/.config/niri-panel/scripts/taskbar.py --watch",
+    "return-type": "json",
+    "format": "{}",
+    "tooltip": false,
+    "on-click": "python3 $HOME/.config/niri-panel/scripts/taskbar.py --click",
+    "on-click-right": "python3 $HOME/.config/niri-panel/scripts/taskbar.py --right-click"
   },
 
   // ---------------------------------------------------------------------------
-  // RIGHT SECTION: Ordered System Modules & Popup Triggers
-  // EXACT ORDER: Clock -> Audio -> Bluetooth -> Battery/Power -> Storage -> Keyboard -> Tray
-  // Clicking any icon opens a real independent floating popup window.
+  // RIGHT SECTION: Ordered System Modules (Triggers REAL Floating Popups)
+  // Order: Clock -> Audio -> Bluetooth -> Battery/Power -> Storage -> Keyboard -> Tray
   // ---------------------------------------------------------------------------
 
   // 1. Clock (FIRST ITEM on right side, HH:MM, no icon)

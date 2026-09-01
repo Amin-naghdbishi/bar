@@ -58,80 +58,25 @@ window#waybar > box {
 }
 
 /* -----------------------------------------------------------------------------
- * 4. Middle Section: Application Taskbar (Individual Buttons)
- * Symmetrical 36x36 containers with 22px Papirus icons centered
- * Clean resting state, subtle running indicator underline, and active highlight
+ * 4. Middle Section: Clean Icon-Only Taskbar (No Cards, No Underlines)
+ * - One icon per application
+ * - Subtle window indicators (dots) underneath
+ * - Clean icon-only design
  * ----------------------------------------------------------------------------- */
-#taskbar {
-    padding: 0;
-    margin: 0 4px;
-}
-
-#taskbar button {
-    min-width: 34px;
+#custom-taskbar {
     min-height: 32px;
-    padding: 0 6px;
+    padding: 0 8px;
     margin: 6px 2px;
-    border-radius: 6px;
     background: transparent;
-    border: 1px solid transparent;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.22);
-    opacity: 0.90;
+    border: none;
+    border-radius: 6px;
+    color: #cbd5e1;
     transition: all 0.12s ease-in-out;
 }
 
-/* Zero out internal GTK child margins for exact centering */
-#taskbar button box {
-    padding: 0;
-    margin: 0;
-}
-
-#taskbar button image {
-    padding: 0;
-    margin: 0;
-    opacity: 0.94;
-    transition: all 0.12s ease-in-out;
-}
-
-#taskbar button label {
-    padding: 0;
-    margin: 0;
-    font-size: 0px;
-    min-width: 0px;
-    min-height: 0px;
-}
-
-/* Hover state - subtle translucent glass tile */
-#taskbar button:hover {
+#custom-taskbar:hover {
     background: rgba(255, 255, 255, 0.08);
-    border-bottom: 2px solid rgba(255, 255, 255, 0.45);
-    opacity: 1.0;
-}
-
-#taskbar button:hover image {
-    opacity: 1.0;
-}
-
-/* Active window - illuminated tile with sky-blue underline */
-#taskbar button.active {
-    background: rgba(255, 255, 255, 0.13);
-    border-bottom: 2px solid #38bdf8;
-    opacity: 1.0;
-}
-
-#taskbar button.active image {
-    opacity: 1.0;
-}
-
-#taskbar button.active:hover {
-    background: rgba(255, 255, 255, 0.18);
-    border-bottom: 2px solid #38bdf8;
-}
-
-/* Minimized window */
-#taskbar button.minimized {
-    opacity: 0.55;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.10);
+    color: #ffffff;
 }
 
 /* -----------------------------------------------------------------------------

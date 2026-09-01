@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Popup Lifecycle & Toggle Manager for Niri Panel
-Ensures exclusive popup display, singleton execution, and smooth toggling.
+Handles launching real GTK3 / Layer-shell popup windows, singleton execution, and smooth toggling.
 """
 
 import json
@@ -60,6 +60,17 @@ def close_active():
             pass
     return name
 
+def find_popup_script(rel_path):
+    candidates = [
+        Path(__file__).resolve().parent.parent / rel_path,
+        Path.home() / ".config" / "niri-panel" / rel_path,
+        Path.cwd() / rel_path
+    ]
+    for c in candidates:
+        if c.exists():
+            return c
+    return None
+
 def open_popup(name, extra_args=None):
     close_active()
     rel_path = POPUP_MAP.get(name)
@@ -67,28 +78,22 @@ def open_popup(name, extra_args=None):
         print(f"Unknown popup: {name}")
         return
 
-    # Check installed path vs repository path
-    script_dir = Path(__file__).resolve().parent
-    base_dir = script_dir.parent
-    
-    popup_script = base_dir / rel_path
-    if not popup_script.exists():
-        # Check ~/.config/niri-panel
-        alt_path = Path.home() / ".config" / "niri-panel" / rel_path
-        if alt_path.exists():
-            popup_script = alt_path
-
-    if not popup_script.exists():
-        print(f"Popup script not found: {rel_path}")
+    popup_script = find_popup_script(rel_path)
+    if not popup_script:
+        print(f"Popup script not found for: {rel_path}")
         return
 
     cmd = [sys.executable, str(popup_script)]
     if extra_args:
         cmd.extend(extra_args)
 
-    proc = subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    proc = subprocess.Popen(
+        cmd,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        start_new_session=True
+    )
     
-    # Save state
     ensure_dir()
     STATE_FILE.write_text(json.dumps({
         "name": name,

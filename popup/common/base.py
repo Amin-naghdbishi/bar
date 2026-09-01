@@ -1,11 +1,6 @@
 """
 Base Popup Window Class for Niri Desktop Shell
-Provides:
-- Layer Shell integration (anchored to taskbar)
-- Translucent RGBA backdrop & Glass styling
-- Close on click-outside and Escape key
-- Singleton PID toggle management
-- Reusable UI builder helpers
+Creates a real independent Wayland floating surface window using GTK3 & gtk-layer-shell
 """
 
 import os
@@ -13,8 +8,9 @@ import signal
 import sys
 from pathlib import Path
 
-# Check if GUI is possible
 HAS_GI = False
+HAS_LAYER_SHELL = False
+
 try:
     import gi
     gi.require_version('Gtk', '3.0')
@@ -22,24 +18,28 @@ try:
     from gi.repository import Gtk, Gdk, GLib, Gio
     HAS_GI = True
     
-    # Try layer shell
     try:
         gi.require_version('GtkLayerShell', '0.1')
         from gi.repository import GtkLayerShell
         HAS_LAYER_SHELL = True
     except Exception:
         HAS_LAYER_SHELL = False
-except Exception:
+except Exception as e:
     HAS_GI = False
     HAS_LAYER_SHELL = False
 
 class BasePopupWindow:
     def __init__(self, title="Popup", width=360, height=None, anchor="right", name="popup"):
+        self.name = name
+        self.title = title
+        self.width = width
+        self.height = height
+        self.anchor = anchor
+
         if not HAS_GI:
-            print(f"[Niri-Panel] Gtk3 not available. Cannot render GUI for {title}.")
+            print(f"[Niri-Panel Popup] Error: PyGObject (Gtk 3.0) is required to display the {title} window.")
             return
 
-        self.name = name
         self.window = Gtk.Window(type=Gtk.WindowType.TOPLEVEL)
         self.window.set_title(title)
         self.window.set_wmclass("niri-panel-popup", "niri-panel-popup")
@@ -48,72 +48,80 @@ class BasePopupWindow:
         self.window.set_skip_taskbar_hint(True)
         self.window.set_skip_pager_hint(True)
         self.window.set_app_paintable(True)
+        self.window.set_keep_above(True)
         self.window.get_style_context().add_class("popup-window")
 
         if width:
             self.window.set_default_size(width, height or -1)
 
-        # Translucent RGBA visual
+        # Translucent RGBA visual for frosted glass effect
         screen = self.window.get_screen()
         visual = screen.get_rgba_visual()
         if visual and screen.is_composited():
             self.window.set_visual(visual)
 
-        # Apply Layer Shell if available
+        # Layer Shell Positioning
         if HAS_LAYER_SHELL:
             GtkLayerShell.init_for_window(self.window)
             GtkLayerShell.set_layer(self.window, GtkLayerShell.Layer.TOP)
             GtkLayerShell.set_anchor(self.window, GtkLayerShell.Edge.BOTTOM, True)
-            GtkLayerShell.set_margin(self.window, GtkLayerShell.Edge.BOTTOM, 52)
+            GtkLayerShell.set_margin(self.window, GtkLayerShell.Edge.BOTTOM, 50)
             
             if anchor == "right":
                 GtkLayerShell.set_anchor(self.window, GtkLayerShell.Edge.RIGHT, True)
-                GtkLayerShell.set_margin(self.window, GtkLayerShell.Edge.RIGHT, 14)
+                GtkLayerShell.set_margin(self.window, GtkLayerShell.Edge.RIGHT, 12)
             elif anchor == "left":
                 GtkLayerShell.set_anchor(self.window, GtkLayerShell.Edge.LEFT, True)
-                GtkLayerShell.set_margin(self.window, GtkLayerShell.Edge.LEFT, 14)
+                GtkLayerShell.set_margin(self.window, GtkLayerShell.Edge.LEFT, 12)
             elif anchor == "center":
-                # Center horizontally
                 GtkLayerShell.set_anchor(self.window, GtkLayerShell.Edge.LEFT, False)
                 GtkLayerShell.set_anchor(self.window, GtkLayerShell.Edge.RIGHT, False)
                 
             GtkLayerShell.set_keyboard_mode(self.window, GtkLayerShell.KeyboardMode.ON_DEMAND)
         else:
+            # Fallback positioning
+            self.window.set_type_hint(Gdk.WindowTypeHint.POPUP_MENU)
             self.window.set_position(Gtk.WindowPosition.CENTER)
 
-        # Load Unified CSS
+        # Load Unified CSS stylesheet
         self._load_css()
 
-        # Keyboard & focus signals
+        # Dismissal events (Escape key & click-outside)
         self.window.connect("key-press-event", self._on_key_press)
         self.window.connect("focus-out-event", self._on_focus_out)
         self.window.connect("destroy", self._on_destroy)
 
-        # Main container
+        # Main root container
         self.root_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
         self.root_box.get_style_context().add_class("popup-root")
         self.window.add(self.root_box)
 
     def _load_css(self):
-        css_file = Path(__file__).resolve().parent / "styles.css"
-        if css_file.exists():
-            css_provider = Gtk.CssProvider()
-            css_provider.load_from_path(str(css_file))
-            Gtk.StyleContext.add_provider_for_screen(
-                self.window.get_screen(),
-                css_provider,
-                Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
-            )
+        css_paths = [
+            Path(__file__).resolve().parent / "styles.css",
+            Path.home() / ".config" / "niri-panel" / "popup" / "common" / "styles.css"
+        ]
+        for cp in css_paths:
+            if cp.exists():
+                try:
+                    css_provider = Gtk.CssProvider()
+                    css_provider.load_from_path(str(cp))
+                    Gtk.StyleContext.add_provider_for_screen(
+                        self.window.get_screen(),
+                        css_provider,
+                        Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+                    )
+                    break
+                except Exception:
+                    pass
 
     def _on_key_press(self, widget, event):
-        # Escape key closes popup
         if event.keyval == Gdk.KEY_Escape:
             self.close()
             return True
         return False
 
     def _on_focus_out(self, widget, event):
-        # Auto-dismiss on click outside
         self.close()
         return False
 
@@ -121,7 +129,7 @@ class BasePopupWindow:
         Gtk.main_quit()
 
     def close(self):
-        if HAS_GI and self.window:
+        if HAS_GI and hasattr(self, "window") and self.window:
             self.window.destroy()
 
     def create_header(self, title_text, subtitle_text="", icon_glyph=""):
@@ -130,7 +138,7 @@ class BasePopupWindow:
 
         if icon_glyph:
             icon_lbl = Gtk.Label()
-            icon_lbl.set_markup(f"<span size='large' color='#38bdf8'>{icon_glyph}</span>")
+            icon_lbl.set_markup(f"<span font='14' color='#38bdf8'>{icon_glyph}</span>")
             header_box.pack_start(icon_lbl, False, False, 0)
 
         title_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=1)
@@ -148,7 +156,6 @@ class BasePopupWindow:
 
         header_box.pack_start(title_vbox, True, True, 0)
 
-        # Close button
         btn_close = Gtk.Button(label="✕")
         btn_close.get_style_context().add_class("popup-close-btn")
         btn_close.connect("clicked", lambda b: self.close())
@@ -168,6 +175,6 @@ class BasePopupWindow:
         return lbl
 
     def run(self):
-        if HAS_GI:
+        if HAS_GI and hasattr(self, "window") and self.window:
             self.window.show_all()
             Gtk.main()

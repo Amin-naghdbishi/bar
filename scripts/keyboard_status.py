@@ -1,36 +1,24 @@
 #!/usr/bin/env python3
 """
 Clean Keyboard Layout Indicator for Waybar
-Requirements:
 - Shows 2-letter uppercase layout code (EN, FA, etc.)
-- Detects active layout via Niri IPC or xkb
-- Tooltip with full layout name
+- No tooltips (clicking opens the real Keyboard Layout Center popup window)
 """
 
 import json
 import subprocess
 import sys
 
-def get_layout_info():
+def get_layout_code():
     code = "EN"
-    full_name = "English (US)"
-
-    # Try Niri IPC
     try:
-        proc = subprocess.run(
-            ["niri", "msg", "-j", "keyboard-layouts"],
-            capture_output=True,
-            text=True,
-            timeout=1
-        )
+        proc = subprocess.run(["niri", "msg", "-j", "keyboard-layouts"], capture_output=True, text=True, timeout=1)
         if proc.returncode == 0 and proc.stdout.strip():
             data = json.loads(proc.stdout)
             names = data.get("names", [])
             idx = data.get("current_idx", 0)
             if names and 0 <= idx < len(names):
-                full_name = names[idx]
-                # Infer 2 letter code
-                fn_lower = full_name.lower()
+                fn_lower = names[idx].lower()
                 if "persian" in fn_lower or "farsi" in fn_lower or "fa" in fn_lower:
                     code = "FA"
                 elif "german" in fn_lower or "de" in fn_lower:
@@ -47,23 +35,14 @@ def get_layout_info():
                     code = "EN"
     except Exception:
         pass
-
-    return code, full_name
+    return code
 
 def main():
-    code, full_name = get_layout_info()
-    
-    tooltip = (
-        f"<b>Keyboard Center</b>\n"
-        f"• Active Layout: <b>{full_name}</b> ({code})\n\n"
-        f"<i>Click to switch layout\n"
-        f"Press Mod+Space in Niri to cycle</i>"
-    )
-
+    code = get_layout_code()
     print(json.dumps({
         "text": code,
         "alt": f"keyboard-{code.lower()}",
-        "tooltip": tooltip,
+        "tooltip": False,
         "class": ["keyboard-module", f"layout-{code.lower()}"]
     }))
 
